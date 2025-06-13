@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accept Emergency Contact Request - Doctor Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* General Reset & Body Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ECF6FF; /* Light blue background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #333;
+        }
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* New emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+
+
+
+        /* Header */
+        .header {
+            color: #234A6B ; /* Blue for 'Contact Request' */
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 35px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Container */
+        .container {
+            background-color: #ffffff; /* White background for professionalism */
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 650px; /* Slightly narrower to focus attention */
+            border: 1px solid #d0e0e6;
+        }
+
+        /* Request Details Section */
+        .request-details {
+            margin-bottom: 30px;
+        }
+
+        .request-details h2 {
+            font-size: 1.8em;
+            color: #e74c3c; /* Red to highlight the 'Emergency Contact' nature */
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* Align text baselines */
+            padding: 12px 0;
+            border-bottom: 1px dashed #e0f0f5; /* Subtle dashed line separator */
+        }
+
+        .info-group:last-of-type {
+            border-bottom: none; /* No border for the last item */
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            flex-basis: 40%; /* Allocate space for label */
+        }
+
+        .info-value {
+            color: #333;
+            text-align: right;
+            flex-basis: 60%; /* Allocate space for value */
+            word-wrap: break-word; /* Ensure long text wraps */
+        }
+
+        .info-value.highlight {
+            font-weight: 700;
+            color: #3F5DD8; /* Blue for the patient's name */
+            font-size: 1.1em;
+        }
+
+        /* Full-width info group for messages */
+        .info-group.full-width {
+            flex-direction: column; /* Stack label and value */
+            align-items: flex-start;
+        }
+
+        .info-group.full-width .info-value {
+            text-align: left;
+            margin-top: 8px;
+            padding: 10px 15px;
+            background-color: #f8fcff; /* Very light blue background for text areas */
+            border-radius: 8px;
+            border: 1px solid #dbe9f0;
+            width: 100%;
+        }
+
+        /* Button Container */
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            margin-top: 30px;
+        }
+
+        .action-button {
+            background: linear-gradient(90deg, #28a745 0%, #218838 100%); /* Green gradient for acceptance */
+            color: white;
+            padding: 15px 40px; /* Larger, prominent button */
+            border: none;
+            border-radius: 15px; /* More rounded */
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3); /* Stronger shadow */
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .action-button.decline {
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%); /* Red gradient for decline */
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+        .action-button:hover.accept {
+            background: linear-gradient(90deg, #218838 0%, #1e7e34 100%);
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
+        }
+        .action-button:hover.decline {
+            background: linear-gradient(90deg, #c82333 0%, #bd2130 100%);
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+        .action-button:active.accept {
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+        .action-button:active.decline {
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+        }
+
+footer {
+        background-color: #13324f;
+        color: white;
+        padding: 30px 20px;
+        margin-top: auto; /* Pushes footer to the bottom */
+}
+footer h6 {
+    color: white;
+    margin-bottom: 15px;
+}
+footer .nav-link {
+    color: white;
+    padding: 5px 0;
+    transition: color 0.2s ease;
+    font-size: 0.85rem;
+}
+footer .nav-link:hover {
+    color: #d0d0d0;
+}
+footer .list-unstyled li {
+    margin-bottom: 5px;
+}
+footer p.small {
+    color: white;
+    font-size: 0.85rem;
+}
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .navbar-nav {
+                align-items: flex-start !important;
+            }
+            .navbar-nav .nav-item {
+                margin-right: 0;
+                width: 100%;
+            }
+            .emergency-dropdown .dropdown-menu {
+                width: 100%;
+                max-width: 350px;
+                margin: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                font-size: 2.2em;
+                margin-bottom: 25px;
+            }
+            .container {
+                padding: 30px;
+                border-radius: 15px;
+            }
+            .request-details h2 {
+                font-size: 1.6em;
+            }
+            .info-group {
+                flex-direction: column; /* Stack label and value on small screens */
+                align-items: flex-start;
+            }
+            .info-label {
+                margin-bottom: 5px;
+                flex-basis: auto;
+            }
+            .info-value {
+                text-align: left;
+                flex-basis: auto;
+                width: 100%; /* Take full width when stacked */
+            }
+            .button-container {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 15px;
+            }
+            .action-button {
+                width: 100%;
+            }
+            footer .col-md-3 {
+                text-align: center !important;
+                margin-bottom: 20px;
+            }
+            footer .d-flex {
+                justify-content: center !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            .header {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .action-button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../home/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Functionality
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="functionalityDropdown">
+                            <li><a class="dropdown-item" href="/crowdMornitoring/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../livetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="/secondOpinion/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../doctorAvailablity/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../recoveryStatus/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../e-Prescription/index.html">E - Prescription</a></li>
+                            <li><a class="dropdown-item" href="../qrCode/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../doctorChat/index.html">Chat</a></li>
+
+                    <li class="nav-item dropdown emergency-dropdown ms-lg-2">
+                        <button
+                            class="btn emergency-btn"
+                            type="button"
+                            id="emergencyDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu shadow rounded-3 border-0 emergency-dropdown" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">SOS</button>
+                                </div>
+                                <p class="text-muted small">Click SOS to alert emergency contacts and services.</p>
+                            </li>
+                            <li><a class="dropdown-item" href="../emergency/index.html">Emergency Protocols</a></li>
+                            <li><a class="dropdown-item" href="#">Call Ambulance</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../Login/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookings/index.html">Bookings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="header">
+        EMERGENCY CONTACT REQUEST
+    </div>
+
+    <div class="container">
+        <div class="request-details">
+            <h2>Patient Request to List You</h2>
+
+            <div class="info-group">
+                <span class="info-label">Patient Name:</span>
+                <span class="info-value highlight" id="patientName">Aarav Sharma</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Patient Contact:</span>
+                <span class="info-value" id="patientPhone">+91 9712345678</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Relation (Requestor):</span>
+                <span class="info-value" id="relation">Self</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Patient Age:</span>
+                <span class="info-value" id="patientAge">32 years</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Blood Group:</span>
+                <span class="info-value" id="bloodGroup">O+</span>
+            </div>
+
+            <div class="info-group full-width">
+                <span class="info-label">Patient's Message:</span>
+                <span class="info-value" id="patientMessage">
+                    "Dr. [Your Name], I'd like to add you as my emergency contact for quick access to my medical history if needed. Thank you for your consideration."
+                </span>
+            </div>
+
+            <div class="info-group full-width">
+                <span class="info-label">Purpose/Reason for Contact:</span>
+                <span class="info-value" id="purposeReason">
+                    Patient wants to ensure their primary care physician is easily reachable in case of an unforeseen emergency.
+                </span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="action-button accept" id="acceptRequestButton">ACCEPT REQUEST</button>
+            <button class="action-button decline" id="declineRequestButton">DECLINE</button>
+        </div>
+    </div>
+    
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../home/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                        <li><a href="../doctorChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+    </script>
+
+
+    <script>
+        // In a real application, these details would be dynamically loaded
+        // from your backend based on the specific request ID.
+        // For demonstration, we're using static values here.
+
+        function loadContactRequest(requestData) {
+            document.getElementById('patientName').textContent = requestData.patientName || 'N/A';
+            document.getElementById('patientPhone').textContent = requestData.patientPhone || 'N/A';
+            document.getElementById('relation').textContent = requestData.relation || 'N/A';
+            document.getElementById('patientAge').textContent = requestData.patientAge ? `${requestData.patientAge} years` : 'N/A';
+            document.getElementById('bloodGroup').textContent = requestData.bloodGroup || 'N/A';
+            document.getElementById('patientMessage').textContent = requestData.patientMessage || 'No message provided.';
+            document.getElementById('purposeReason').textContent = requestData.purposeReason || 'Not specified.';
+        }
+
+        // Simulating data received from a server for a specific request
+        const demoRequestData = {
+            patientName: "Aarav Sharma",
+            patientPhone: "+91 9712345678",
+            relation: "Self",
+            patientAge: 32,
+            bloodGroup: "O+",
+            patientMessage: "Dr. [Your Name], I'd like to add you as my emergency contact for quick access to my medical history if needed. Thank you for your consideration.",
+            purposeReason: "Patient wants to ensure their primary care physician is easily reachable in case of an unforeseen emergency."
+        };
+
+        // Load the demo data when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContactRequest(demoRequestData);
+        });
+
+        // Handle the "Accept Request" button click
+        document.getElementById('acceptRequestButton').addEventListener('click', function() {
+            // In a real application:
+            // 1. Send an AJAX request to your backend to mark this request as accepted.
+            // 2. The backend would then formally link the patient's emergency contact to this doctor.
+            // 3. (Crucially) The backend would notify the patient that their request has been accepted.
+            // 4. Potentially, the patient's record would now show this doctor as their emergency contact.
+
+            alert(`You have accepted Aarav Sharma's request to list you as an emergency contact!\n\n(Patient will be notified. Your contact info is now linked for emergency use.)`);
+
+            // Disable buttons and update text after action
+            document.getElementById('acceptRequestButton').disabled = true;
+            document.getElementById('declineRequestButton').disabled = true;
+            document.getElementById('acceptRequestButton').textContent = "REQUEST ACCEPTED";
+            document.getElementById('acceptRequestButton').classList.remove('accept'); // Remove green class
+            document.getElementById('acceptRequestButton').style.background = '#6c757d'; // Grey out
+            document.getElementById('acceptRequestButton').style.boxShadow = 'none';
+            document.getElementById('acceptRequestButton').style.cursor = 'not-allowed';
+            document.getElementById('declineRequestButton').style.display = 'none'; // Hide decline
+        });
+
+        // Handle the "Decline" button click
+        document.getElementById('declineRequestButton').addEventListener('click', function() {
+            // In a real application:
+            // 1. Send an AJAX request to your backend to mark this request as declined.
+            // 2. The backend would notify the patient that their request has been declined.
+            // 3. The request would be closed/removed.
+
+            alert(`You have declined Aarav Sharma's request.\n\n(Patient will be notified.)`);
+
+            // Disable buttons and update text after action
+            document.getElementById('acceptRequestButton').disabled = true;
+            document.getElementById('declineRequestButton').disabled = true;
+            document.getElementById('declineRequestButton').textContent = "REQUEST DECLINED";
+            document.getElementById('declineRequestButton').classList.remove('decline'); // Remove red class
+            document.getElementById('declineRequestButton').style.background = '#6c757d'; // Grey out
+            document.getElementById('declineRequestButton').style.boxShadow = 'none';
+            document.getElementById('declineRequestButton').style.cursor = 'not-allowed';
+            document.getElementById('acceptRequestButton').style.display = 'none'; // Hide accept
+        });
+    </script>
+</body>
+</html>

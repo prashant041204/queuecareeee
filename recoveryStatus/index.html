@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery Status - Doctor Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* General Reset & Body Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; /* Modern, clean font */
+            background-color: #ECF6FF; /* Light blue background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align content to start for top navbar */
+            padding: 0; /* Remove body padding here, use container for internal padding */
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            color: #234A6B; /* Darker text for header */
+            font-size: 3.2em; /* Larger, more impactful */
+            font-weight: 700;
+            letter-spacing: 2px; /* Add some space */
+            margin-top: 50px; /* Space from navbar */
+            margin-bottom: 40px; /* More space below header */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            text-align: center;
+            line-height: 1.2; /* Adjust line height for multi-line header */
+        }
+
+        .header span {
+            color: #4169e1; /* Royal Blue for "STATUS" */
+        }
+
+        /* Container for each patient's status */
+        .container.patient-status-card { /* Added specific class for this container type */
+            background-color: #ffffff; /* Use white for a cleaner, modern look */
+            border-radius: 20px; /* More rounded corners */
+            padding: 40px; /* More internal padding */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); /* Stronger, softer shadow */
+            width: 100%;
+            max-width: 750px; /* Wider container for better spacing */
+            margin-bottom: 30px; /* Space between the two containers */
+            border: 1px solid #d0e0e6; /* Subtle border */
+        }
+
+        .container.patient-status-card:last-child {
+            margin-bottom: 50px; /* Space for the last container before footer */
+        }
+
+        /* Title for each patient card */
+        .patient-card-title {
+            font-size: 1.6em;
+            color: #3F5DD8; /* Blue for the main heading */
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0f0f5; /* Separator line */
+        }
+
+        /* Grid layout for input fields */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+            gap: 25px; /* Increased space between input fields */
+        }
+
+        /* Full-width specific input group */
+        .input-group.full-width {
+            grid-column: 1 / -1; /* Spans all columns */
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px; /* More space between label and input */
+            font-weight: 600; /* Bolder labels */
+            color: #444; /* Darker label color */
+            font-size: 0.95em; /* Slightly larger label font */
+        }
+
+        .input-field {
+            background-color: #f0f8ff; /* Lightest blue for input background */
+            border: 1px solid #a7d9ee; /* Light blue border */
+            padding: 14px 18px; /* More padding for better feel */
+            border-radius: 10px; /* Rounded input corners */
+            font-size: 1.05em; /* Slightly larger input font */
+            color: #333;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease; /* Smooth transitions for focus */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+        }
+
+        .input-field::placeholder {
+            color: #888; /* Softer placeholder color */
+            font-weight: 400;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4169e1; /* Royal blue border on focus */
+            background-color: #ffffff; /* White background on focus */
+            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.2); /* Softer, wider focus shadow */
+        }
+
+        /* Textarea specific styles */
+        textarea.input-field {
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 100px; /* Minimum height for notes */
+            max-height: 250px; /* Maximum height for notes */
+        }
+
+        /* Button Container */
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center; /* Center the button */
+            margin-top: 35px; /* More space above the button */
+        }
+
+        .action-button {
+            background: linear-gradient(90deg, #28a745 0%, #218838 100%); /* Green gradient for acceptance */
+            color: white;
+            padding: 15px 45px; /* Larger padding */
+            border: none;
+            border-radius: 12px; /* More rounded button */
+            font-size: 1.2em; /* Larger font */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3); /* Stronger shadow */
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .action-button:hover {
+            background: linear-gradient(90deg, #218838 0%, #1e7e34 100%); /* Darker gradient on hover */
+            transform: translateY(-2px); /* Lift effect */
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4); /* More intense shadow */
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        /* Navbar & Dropdown Styles (copied for consistency) */
+        .navbar-brand {
+            font-size: 1.5rem; /* Adjust brand font size */
+        }
+
+        .nav-link {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            color: #000000 !important; /* Changed to black */
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: #555555 !important; /* Darker grey on hover for black text */
+        }
+
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* Emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Added subtle shadow */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Bootstrap button styles for nav, for consistency */
+        .btn-primary {
+            background-color: #4a63f5;
+            border-color: #4a63f5;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3c5baf;
+            border-color: #3c5baf;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-tertiary {
+            background-color: #a7b7eb; /* A lighter blue/purple tone */
+            border-color: #a7b7eb;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #8493cc;
+            border-color: #8493cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+
+        /* Footer Styles */
+        footer {
+            background-color: #13324f;
+            color: white; /* Main footer text color */
+            padding: 30px 20px;
+            width: 100%;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        footer .list-unstyled li a {
+            color: white; /* Link color within footer */
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+        /* Ensure all direct text in footer is white */
+        footer p, footer h6 {
+            color: white;
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header {
+                font-size: 2.5em;
+                margin-top: 30px; /* Adjust margin for smaller screens */
+                margin-bottom: 30px;
+            }
+            .container.patient-status-card {
+                padding: 30px;
+                border-radius: 15px;
+            }
+            .patient-card-title {
+                font-size: 1.4em;
+            }
+            .input-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjust columns for tablet */
+                gap: 20px;
+            }
+            .input-group.full-width {
+                grid-column: 1 / -1; /* Ensure full width on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                /* padding: 15px; removed as container has padding */
+            }
+            .header {
+                font-size: 2em;
+                margin-top: 25px; /* Adjust margin for smaller screens */
+                margin-bottom: 25px;
+            }
+            .container.patient-status-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .patient-card-title {
+                font-size: 1.2em;
+            }
+            .input-grid {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+                gap: 15px;
+            }
+            .input-field {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+            .action-button {
+                padding: 12px 30px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm w-100">
+        <div class="container-fluid"> <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+        
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <div class="navbar-collapse collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+        
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Functionality
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="functionalityDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientEprescription/index.html">E - Prescription</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+        
+                    <li class="nav-item"><a class="nav-link" href="../patientChat/index.html">Chat</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button 
+                            class="btn emergency-btn dropdown-toggle" 
+                            type="button" 
+                            id="emergencyDropdown" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+        
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Bookings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header">
+        RECOVERY<br>
+        <span>STATUS</span>
+    </div>
+
+    <div class="container patient-status-card">
+        <h3 class="patient-card-title">Patient Details & Recovery Update (Request #1)</h3>
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="patientName1">Patient Name:</label>
+                <input type="text" id="patientName1" class="input-field" placeholder="e.g., John Doe" value="John Doe" readonly>
+            </div>
+            <div class="input-group">
+                <label for="patientAge1">Age:</label>
+                <input type="number" id="patientAge1" class="input-field" placeholder="e.g., 45" value="45" readonly>
+            </div>
+            <div class="input-group">
+                <label for="hospitalName1">Hospital:</label>
+                <input type="text" id="hospitalName1" class="input-field" placeholder="e.g., City General" value="City General Hospital" readonly>
+            </div>
+            <div class="input-group">
+                <label for="dateOfVisit1">Date of Visit:</label>
+                <input type="date" id="dateOfVisit1" class="input-field" value="2025-06-10" readonly>
+            </div>
+            <div class="input-group">
+                <label for="diagnosis1">Diagnosis:</label>
+                <input type="text" id="diagnosis1" class="input-field" placeholder="e.g., Appendicitis" value="Acute Appendicitis" readonly>
+            </div>
+            <div class="input-group full-width">
+                <label for="recoveryStatus1">Recovery Status:</label>
+                <textarea id="recoveryStatus1" class="input-field" rows="3" placeholder="e.g., Patient showing significant improvement, sutures removed, discharged." readonly>fully recovered</textarea>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="action-button accept-recovery-btn" data-patient-id="1">ACCEPT RECOVERY STATUS</button>
+        </div>
+    </div>
+
+    <div class="container patient-status-card">
+        <h3 class="patient-card-title">Patient Details & Recovery Update (Request #2)</h3>
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="patientName2">Patient Name:</label>
+                <input type="text" id="patientName2" class="input-field" placeholder="e.g., Jane Smith" value="Jane Smith" readonly>
+            </div>
+            <div class="input-group">
+                <label for="patientAge2">Age:</label>
+                <input type="number" id="patientAge2" class="input-field" placeholder="e.g., 60" value="60" readonly>
+            </div>
+            <div class="input-group">
+                <label for="hospitalName2">Hospital:</label>
+                <input type="text" id="hospitalName2" class="input-field" placeholder="e.g., County Hospital" value="County Hospital" readonly>
+            </div>
+            <div class="input-group">
+                <label for="dateOfVisit2">Date of Visit:</label>
+                <input type="date" id="dateOfVisit2" class="input-field" value="2025-06-05" readonly>
+            </div>
+            <div class="input-group">
+                <label for="diagnosis2">Diagnosis:</label>
+                <input type="text" id="diagnosis2" class="input-field" placeholder="e.g., Pneumonia" value="Bacterial Pneumonia" readonly>
+            </div>
+            <div class="input-group full-width">
+                <label for="recoveryStatus2">Recovery Status:</label>
+                <textarea id="recoveryStatus2" class="input-field" rows="3" placeholder="e.g., Patient's fever has subsided, vital signs stable, still requires respiratory support." readonly>need follow up</textarea>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="action-button accept-recovery-btn" data-patient-id="2">ACCEPT RECOVERY STATUS</button>
+        </div>
+    </div>
+
+
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../patientHome/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small">+91 9171015834</p>
+                    <p class="small">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+
+        // Function to handle the acceptance logic for a specific patient card
+        function handleAcceptRecovery(buttonElement) {
+            const patientId = buttonElement.dataset.patientId; // Get the patient ID from the data attribute
+            const patientName = document.getElementById(`patientName${patientId}`).value;
+
+            // In a real application, you would send this acceptance to your backend:
+            // 1. Mark this specific patient's recovery status as "accepted" in your database.
+            // 2. Potentially trigger notifications to relevant parties (e.g., the patient, their primary care physician).
+
+            alert(`Recovery status for patient ${patientName} (ID: ${patientId}) has been accepted!`);
+
+            // Disable the button and change its appearance after acceptance
+            buttonElement.disabled = true;
+            buttonElement.textContent = "STATUS ACCEPTED";
+            buttonElement.style.background = '#6c757d'; /* Grey out button */
+            buttonElement.style.boxShadow = 'none';
+            buttonElement.style.cursor = 'not-allowed';
+            buttonElement.style.transform = 'none'; /* Remove hover transform */
+            buttonElement.onmouseover = null; /* Remove hover effect */
+            buttonElement.onmouseout = null; /* Remove hover effect */
+        }
+
+        // Add event listeners to all "ACCEPT RECOVERY STATUS" buttons
+        document.querySelectorAll('.accept-recovery-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                handleAcceptRecovery(this); // Pass the clicked button element to the handler
+            });
+        });
+
+        // Initialize today's date for date inputs if they were editable
+        // (Currently set to readonly and pre-filled for demo, but good practice for editable forms)
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            // If date inputs were not readonly, you would set their min attribute like this:
+            // document.getElementById('dateOfVisit1').setAttribute('min', today);
+            // document.getElementById('dateOfVisit2').setAttribute('min', today);
+        });
+    </script>
+</body>
+</html>

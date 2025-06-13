@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Availability</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack header, content, footer */
+            justify-content: flex-start; /* Align items to the start of the column */
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* New emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            margin-top: 20px; /* Added margin for spacing from navbar */
+            margin-bottom: 20px; /* Added margin for spacing to footer */
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #3498db;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .phone {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            padding-right: 35px;
+        }
+        
+        .location-icon {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            color: #3498db;
+            cursor: pointer;
+        }
+        
+        .steps {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .steps h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .time-slots {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .time-slot {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-slot:hover {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .time-slot.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .steps ul {
+            padding-left: 20px;
+            color: #7f8c8d;
+            list-style-type: none;
+        }
+        
+        .steps li {
+            margin-bottom: 15px;
+        }
+        
+        .feedback {
+            margin-top: 25px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        
+        #datePicker {
+            cursor: pointer;
+        }
+        
+        .loading {
+            display: none;
+            color: #3498db;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .submit-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #submitBtn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        
+        #submitBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        .availability-status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .available {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .not-available {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        footer {
+            background-color: #13324f;
+            color: white;
+            padding: 30px 20px;
+            width: 100%; /* Ensure footer spans full width */
+            margin-top: auto; /* Push footer to the bottom */
+        }
+        footer .list-unstyled li a {
+            color: white; /* Ensure links in footer are white */
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+  
+      <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="navbar-collapse collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="../home/index.html">Home</a></li>
+  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Functionality
+            </a>
+            <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+              <li><a class="dropdown-item" href="/crowdMornitoring/index.html">Crowd Monitoring</a></li>
+              <li><a class="dropdown-item" href="../livetoken/index.html">Live Token Tracker</a></li>
+              <li><a class="dropdown-item" href="/secondOpinion/index.html">Second Opinion</a></li>
+              <li><a class="dropdown-item" href="../doctorAvailablity/index.html">Doctor Availability</a></li>
+              <li><a class="dropdown-item" href="../recoveryStatus/index.html">Recovery Status</a></li>
+              <li><a class="dropdown-item" href="../e-Prescription/index.html">E - Prescription</a></li>
+              <li><a class="dropdown-item" href="../qrCode/index.html">QR-Checkin</a></li>
+            </ul>
+          </li>
+  
+          <li class="nav-item"><a class="nav-link" href="../doctorChat/index.html">Chat</a></li>
+          
+          <li class="nav-item ms-2">
+            <button 
+              onclick="window.location.href='../emergency/index.html'" 
+              class="btn emergency-btn" 
+              type="button" >
+              <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+            </button>
+          </li>
+          
+          <li class="nav-item"><a class="nav-link" href="../Login/index.html">Sign Out</a></li>
+          <li class="nav-item ms-2">
+            <a class="btn btn-primary rounded-pill px-4" href="../bookings/index.html">Bookings</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <a href="/homewithout" style="position: fixed; top: 20px; right: 20px; z-index: 1000; text-decoration: none;">
+        <button style="background-color: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+            <i class="fas fa-home"></i> Back to Home
+        </button>
+    </a>
+
+    <div class="container">
+        <h1>DOCTOR</h1>
+        <p class="subtitle">AVAILABILITY</p>
+        
+        <p class="description">Find the right doctor for your ailments!</p>
+        
+        <div class="phone">call +91-XXXXXXXXXX to book an appointment</div>
+        
+        <div class="input-group">
+            <label>Mention your State:</label>
+            <input type="text" id="state" placeholder="Enter your state">
+            <i class="fas fa-map-marker-alt location-icon" id="stateLocator" title="Detect my location"></i>
+            <div class="loading" id="stateLoading">Detecting location...</div>
+        </div>
+        
+        <div class="input-group">
+            <label>Mention your city:</label>
+            <input type="text" id="city" placeholder="Enter your city">
+            <i class="fas fa-map-marker-alt location-icon" id="cityLocator" title="Detect my location"></i>
+            <div class="loading" id="cityLoading">Detecting location...</div>
+        </div>
+        
+        <div class="steps">
+            <h3>Find a Doctor in following steps</h3>
+            <ul>
+                <li>
+                    <label>Select Speciality:</label>
+                    <select id="speciality">
+                        <option value="">-- Select Speciality --</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Gynaecologist">Gynaecologist</option>
+                        <option value="Paediatrician">Paediatrician</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                    </select>
+                </li>
+                <li>
+                    <label>Select Date:</label>
+                    <input type="date" id="datePicker">
+                </li>
+                <li>
+                    <div class="time-slots" id="timeSlots">
+                        <label>Select Time Slot:</label><br>
+                        <div class="time-slot" data-time="09:00-09:30">09:00-09:30</div>
+                        <div class="time-slot" data-time="10:00-10:30">10:00-10:30</div>
+                        <div class="time-slot" data-time="11:00-11:30">11:00-11:30</div>
+                        <div class="time-slot" data-time="14:00-14:30">14:00-14:30</div>
+                        <div class="time-slot" data-time="15:00-15:30">15:00-15:30</div>
+                        <div class="time-slot" data-time="16:00-16:30">16:00-16:30</div>
+                    </div>
+                </li>
+                <li>
+                    <label>Preferred Hospital:</label>
+                    <select id="hospital">
+                        <option value="">-- Select Hospital --</option>
+                        <option value="Apollo Hospitals">Apollo Hospitals</option>
+                        <option value="Fortis Hospital">Fortis Hospital</option>
+                        <option value="Max Super Speciality Hospital">Max Super Speciality Hospital</option>
+                        <option value="AIIMS">AIIMS</option>
+                        <option value="Manipal Hospital">Manipal Hospital</option>
+                        <option value="Medanta - The Medicity">Medanta - The Medicity</option>
+                        <option value="Kokilaben Dhirubhai Ambani Hospital">Kokilaben Dhirubhai Ambani Hospital</option>
+                        <option value="Artemis Hospital">Artemis Hospital</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="submit-container">
+            <button id="submitBtn">Check Availability</button>
+        </div>
+        
+        <div class="availability-status" id="availabilityStatus"></div>
+        
+        <p class="feedback">Read feedback about our Services and wonderful team!</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set minimum date to today
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1); // Set min date to tomorrow
+            document.getElementById('datePicker').min = tomorrow.toISOString().split('T')[0];
+            
+            // Show time slots when date is selected
+            document.getElementById('datePicker').addEventListener('change', function() {
+                document.getElementById('timeSlots').style.display = 'block';
+                checkFormCompletion(); // Re-check completion after date selection
+            });
+            
+            // Time slot selection
+            const timeSlots = document.querySelectorAll('.time-slot');
+            let selectedTime = null;
+            
+            timeSlots.forEach(slot => {
+                slot.addEventListener('click', function() {
+                    timeSlots.forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTime = this.getAttribute('data-time');
+                    checkFormCompletion();
+                });
+            });
+            
+            // Location detection for state and city
+            const stateLocator = document.getElementById('stateLocator');
+            const cityLocator = document.getElementById('cityLocator');
+            const stateInput = document.getElementById('state');
+            const cityInput = document.getElementById('city');
+            const stateLoading = document.getElementById('stateLoading');
+            const cityLoading = document.getElementById('cityLoading');
+            
+            function detectLocation(targetInput, loadingElement) {
+                loadingElement.style.display = 'block';
+                
+                if (!navigator.geolocation) {
+                    alert("Geolocation is not supported by your browser");
+                    loadingElement.style.display = 'none';
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (targetInput === stateInput) {
+                                    targetInput.value = data.address.state || data.address.county || 'Unknown';
+                                } else {
+                                    targetInput.value = data.address.city || data.address.town || data.address.village || 'Unknown';
+                                }
+                                loadingElement.style.display = 'none';
+                                checkFormCompletion();
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Could not determine your location. Please enter manually.');
+                                loadingElement.style.display = 'none';
+                            });
+                    },
+                    (error) => {
+                        console.error('Error:', error);
+                        alert('Could not determine your location. Please enable location services or enter manually.');
+                        loadingElement.style.display = 'none';
+                    }
+                );
+            }
+            
+            stateLocator.addEventListener('click', () => detectLocation(stateInput, stateLoading));
+            cityLocator.addEventListener('click', () => detectLocation(cityInput, cityLoading));
+            
+            // Form completion check
+            function checkFormCompletion() {
+                const state = document.getElementById('state').value;
+                const city = document.getElementById('city').value;
+                const speciality = document.getElementById('speciality').value;
+                const date = document.getElementById('datePicker').value;
+                const hospital = document.getElementById('hospital').value;
+                
+                const allFilled = state && city && speciality && date && selectedTime && hospital;
+                document.getElementById('submitBtn').style.display = allFilled ? 'block' : 'none';
+            }
+            
+            // Monitor all form fields
+            document.getElementById('state').addEventListener('input', checkFormCompletion);
+            document.getElementById('city').addEventListener('input', checkFormCompletion);
+            document.getElementById('speciality').addEventListener('change', checkFormCompletion);
+            document.getElementById('hospital').addEventListener('change', checkFormCompletion);
+            // datePicker and timeSlots are already handled above
+
+            // Handle form submission
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                const availabilityStatus = document.getElementById('availabilityStatus');
+                
+                // Simulate availability check (70% chance available)
+                const isAvailable = Math.random() > 0.3;
+                
+                availabilityStatus.style.display = 'block';
+                availabilityStatus.className = isAvailable ? 'availability-status available' : 'availability-status not-available';
+                availabilityStatus.innerHTML = isAvailable 
+                    ? '<i class="fas fa-check-circle"></i> Doctor is available! <a href="#" id="bookNowLink" style="color: #155724; text-decoration: underline;">Book Now</a>'
+                    : '<i class="fas fa-times-circle"></i> Doctor is not available for this time slot. Please try another time.';
+                
+                availabilityStatus.scrollIntoView({ behavior: 'smooth' });
+
+                if (isAvailable) {
+                    // Add event listener to the dynamically created "Book Now" link
+                    document.getElementById('bookNowLink').addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+                        console.log('Book Now clicked! Implement actual booking logic here.');
+                        // You would typically redirect to a booking confirmation page or show a modal
+                        // window.location.href = '../bookingConfirmation/index.html'; 
+                        alert('Booking functionality not implemented yet!');
+                    });
+                }
+            });
+
+            // Initial check on load to see if submit button should be visible (e.g., if fields are pre-filled)
+            checkFormCompletion(); 
+        });
+    </script>
+
+<footer class="text-center py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">QUECARE</h6>
+                <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                <div class="d-flex justify-content-start">
+                    </div>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Explore</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../home/index.html" class="nav-link p-0">Home</a></li>
+                    <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                    <li><a href="../doctorChat/index.html" class="nav-link p-0">Consultation</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">About Us</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                    <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                    <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Contact</h6>
+                <p class="small" style="color: white;">+91 9171015834</p>
+                <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

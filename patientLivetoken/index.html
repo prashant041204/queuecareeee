@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Token Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9ff;
+            display: flex;
+            flex-direction: column; /* Organize content in a column */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            margin: 0;
+            padding: 0;
+        }
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* New emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Corrected footer CSS */
+        footer {
+            background-color: #13324f;
+            color: white;
+            padding: 30px 20px;
+            width: 100%;
+            margin-top: auto; /* Pushes the footer to the bottom */
+        }
+        footer .list-unstyled li a {
+            color: white; /* Ensure links in footer are white */
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+
+        .tracker-header {
+            text-align: center;
+            padding: 60px 20px 20px;
+            font-weight: 700;
+            font-size: 2rem;
+            color: #1f3c88;
+        }
+        .wait-time-section {
+            background-color: white;
+            margin: 40px auto;
+            padding: 30px;
+            max-width: 600px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            flex-grow: 1; /* Allow this section to grow and take available space */
+            width: 100%; /* Ensure it respects max-width */
+        }
+        .wait-time-section h3 {
+            margin-bottom: 20px;
+            color: #1f3c88;
+        }
+        .wait-time-list {
+            font-size: 1rem;
+        }
+        .currently-serving {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+        }
+        .badge {
+            font-size: 0.75rem;
+        }
+        /* Style for the fixed back button */
+        .back-to-home-btn-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../patientHospital/index.html">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-tertiary rounded-pill px-4" href="../emergencyInformation/index.html">
+                            Emergency Info
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div class="tracker-header">LIVE TOKEN <span style="color: #4169e1;">TRACKER</span></div>
+
+<div class="wait-time-section">
+    <h3>TOKEN STATUS</h3>
+    <ul class="list-group wait-time-list" id="token-list">
+        </ul>
+</div>
+
+  <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../patientHome/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                        <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function triggerEmergency() {
+        alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+    }
+
+    // Generate random token data directly in the browser
+    function generateTokenData(count = 5) {
+        const tokens = [];
+        const now = new Date();
+        const currentToken = Math.floor(Math.random() * 100) + 1; // Random starting token number
+        const AVG_PROCESSING_TIME = 5; // minutes per patient
+        
+        for (let i = 0; i < count; i++) {
+            const waitMinutes = (i) * AVG_PROCESSING_TIME; // For "Now Serving", wait time is 0
+            const estimatedTime = new Date(now.getTime() + waitMinutes * 60000);
+            
+            tokens.push({
+                token: currentToken + i,
+                wait_time: waitMinutes === 0 ? '0 minutes' : `${waitMinutes} minutes`, // "Now Serving" has 0 wait time
+                status: i === 0 ? 'Currently Serving' : 'Waiting',
+                estimated_ready_time: estimatedTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                position: i
+            });
+        }
+        
+        return tokens;
+    }
+
+    function displayTokens() {
+        const data = generateTokenData();
+        const list = document.getElementById('token-list');
+        list.innerHTML = ''; // Clear existing content
+
+        if (data.length === 0) {
+            list.innerHTML = '<li class="list-group-item text-center">No tokens available.</li>';
+            return;
+        }
+
+        data.forEach(token => {
+            const li = document.createElement('li');
+            li.className = `list-group-item ${token.status === 'Currently Serving' ? 'currently-serving' : ''}`;
+            
+            // Adjust display for "Now Serving" vs. waiting positions
+            const positionDisplay = token.status === 'Currently Serving' ? 
+                                    '<span class="badge bg-primary ms-2">Now Serving</span>' : 
+                                    `<span class="text-muted small ms-2">Position: ${token.position + 1}</span>`;
+
+            li.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Token ${token.token}</strong>
+                        ${positionDisplay}
+                    </div>
+                    <div class="text-end">
+                        <div>${token.wait_time}</div>
+                        <div class="small text-muted">~ ${token.estimated_ready_time}</div>
+                    </div>
+                </div>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    // Display tokens immediately and then every 30 seconds
+    displayTokens();
+    setInterval(displayTokens, 30000);
+</script>
+
+</body>
+</html>

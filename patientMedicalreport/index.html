@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Report Storage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f9ff;
+            color: #333;
+            display: flex; /* Added for sticky footer */
+            flex-direction: column; /* Added for sticky footer */
+            min-height: 100vh; /* Added for sticky footer */
+            margin: 0;
+        }
+        .dropdown-menu {
+            border-radius: 20px; /* Original style */
+            padding: 15px; /* Original style */
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1); /* Original style */
+            border: none; /* Original style */
+        }
+        .dropdown-item {
+            padding: 10px 12px; /* Original style */
+            border-radius: 10px; /* Original style */
+            transition: background 0.2s ease; /* Original style */
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7; /* Original style */
+        }
+        
+        /* New emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Added subtle shadow */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Original Footer CSS */
+        footer {
+            background-color: #13324f; /* Original background color */
+            color: white;
+            padding: 30px 20px;
+            width: 100%;
+            margin-top: auto;
+        }
+        footer .list-unstyled li a {
+            color: white; /* Ensure links in footer are white */
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+        
+        .hero-section {
+            background: linear-gradient(to right, #4a63f5, #3c5baf); /* Original gradient */
+            color: white;
+            padding: 4rem 1rem 6rem; /* Original padding */
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-section h1 {
+            font-weight: 700;
+            font-size: 2.2rem; /* Original font size */
+        }
+        
+        .hero-section p {
+            opacity: 0.9;
+            font-size: 1rem; /* Original font size */
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            fill: #f5f9ff; /* Fill color to match body background */
+        }
+        
+        /* --- UI Enhancements for the Center Info Box (content-wrapper and its children) --- */
+        .content-wrapper {
+            margin-top: -100px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2.5rem; /* Increased padding */
+            flex-grow: 1;
+            background: white; /* Solid white background for contrast */
+            border-radius: 18px; /* Slightly more rounded */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* More pronounced shadow */
+            position: relative; /* For potential future elements */
+            border: 1px solid #e0e6f0; /* Subtle light border */
+        }
+        
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem; /* Increased margin */
+        }
+        
+        .action-button {
+            background-color: #eef2ff; /* Lighter background for buttons */
+            border-radius: 12px; /* Slightly less rounded */
+            padding: 1.2rem 1.8rem; /* More generous padding */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out; /* Smoother transitions */
+            border-bottom: 3px solid transparent; /* For active state visual */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Subtle initial shadow */
+        }
+        
+        .action-button:hover {
+            background-color: #d6ddff; /* Darker on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+            transform: translateY(-3px); /* Subtle lift effect */
+        }
+        
+        .action-button.active {
+            border-bottom: 3px solid #4a63f5; /* Primary blue for active state */
+            background-color: #d6ddff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* Stronger shadow when active */
+            transform: translateY(-1px); /* Less lift when active */
+        }
+        
+        .action-button i {
+            font-size: 2.2rem; /* Slightly larger icons */
+            color: #4a63f5; /* Consistent blue for icons */
+            margin-bottom: 0.5rem; /* More spacing below icon */
+            display: block; /* Ensures icon is on its own line above text */
+        }
+        
+        .search-box {
+            border-radius: 28px; /* Slightly more rounded than 25px */
+            padding: 0.8rem 1.5rem; /* More padding */
+            border: 1px solid #d0d6e0; /* Subtle border */
+            width: 100%;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Inner shadow */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-size: 1rem; /* Readable font size */
+        }
+        
+        .search-box:focus {
+            border-color: #63a4ff; /* Blue border on focus */
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 0.2rem rgba(74, 99, 245, 0.25); /* Focus ring */
+        }
+        
+        .report-card {
+            background-color: white;
+            border-radius: 12px; /* Consistent rounding */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06); /* Lighter, cleaner shadow */
+            margin-bottom: 1rem;
+            padding: 1.2rem 1.5rem; /* Increased padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #f0f2f5; /* Very light border */
+            transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        
+        .report-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+            transform: translateY(-2px); /* Subtle lift on hover */
+        }
+
+        .report-card span {
+            font-weight: 500;
+            color: #495057; /* Slightly darker text for readability */
+            display: flex; /* Align icon with text */
+            align-items: center;
+        }
+
+        .report-card span i {
+            margin-right: 10px; /* Space between icon and text */
+            font-size: 1.3rem; /* Larger icon for file type */
+        }
+        
+        .report-card a {
+            color: #4a63f5; /* Primary blue for download icon */
+            text-decoration: none;
+            font-size: 1.4rem; /* Larger download icon */
+            transition: color 0.2s ease-in-out;
+        }
+        
+        .report-card a:hover {
+            color: #3c5baf; /* Darker blue on hover */
+        }
+        
+        .upload-box {
+            background-color: #f0f8ff; /* Very light blue background */
+            border: 2px dashed #63a4ff; /* Primary blue dashed border */
+            border-radius: 12px;
+            padding: 3rem; /* More generous padding */
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-box:hover {
+            background-color: #e0f2ff; /* Darker on hover */
+            border-color: #4a63f5; /* Stronger border on hover */
+        }
+        
+        .upload-box i {
+            font-size: 3.5rem; /* Larger icon */
+            color: #63a4ff; /* Primary blue for icon */
+            margin-bottom: 1rem;
+        }
+        
+        .upload-box strong {
+            color: #495057; /* Darker text */
+            font-size: 1.1rem;
+        }
+
+        .upload-box p.text-muted {
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+        }
+        
+        .upload-box input {
+            display: none;
+        }
+        
+        .btn-primary {
+            background-color: #4a63f5;
+            border-color: #4a63f5;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.6rem 1.5rem; /* Adjusted padding */
+        }
+        
+        .btn-primary:hover {
+            background-color: #3c5baf;
+            border-color: #3c5baf;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-tertiary {
+            background-color: #a7b7eb; /* A lighter blue/purple tone */
+            border-color: #a7b7eb;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #8493cc;
+            border-color: #8493cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Style for the fixed back button (if you decide to add it) */
+        .back-to-home-btn-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../patientHospital/index.html">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-tertiary rounded-pill px-4" href="../emergencyInformation/index.html">
+                            Emergency Info
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div class="hero-section">
+    <h1>Medical Report <span style="color:#ffd">Storage</span></h1>
+    <p>Securely manage, view, and upload all your past health records in one place.</p>
+    <svg class="wave" viewBox="0 0 1440 320"><path fill="#f5f9ff" fill-opacity="1" d="M0,192L80,192C160,192,320,192,480,202.7C640,213,800,235,960,218.7C1120,203,1280,149,1360,122.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path></svg>
+</div>
+
+<div class="content-wrapper">
+    <div class="action-icons">
+        <div class="action-button active" id="viewBtn">
+            <i class="bi bi-eye-fill"></i>
+            <div><small>View Documents</small></div>
+        </div>
+        <div class="action-button" id="uploadBtn">
+            <i class="bi bi-upload"></i>
+            <div><small>Upload Reports</small></div>
+        </div>
+    </div>
+
+    <input type="text" class="search-box mb-4" placeholder="Search by report name...">
+
+    <div id="viewSection">
+        <div class="report-card">
+            <span><i class="bi bi-file-earmark-pdf-fill text-danger"></i> report1.pdf</span>
+            <a href="#" title="Download"><i class="bi bi-download"></i></a>
+        </div>
+        <div class="report-card">
+            <span><i class="bi bi-file-earmark-medical-fill text-success"></i> blood_test_results.pdf</span>
+            <a href="#" title="Download"><i class="bi bi-download"></i></a>
+        </div>
+        <div class="report-card">
+            <span><i class="bi bi-file-earmark-image-fill text-primary"></i> xray_chest_march.jpeg</span>
+            <a href="#" title="Download"><i class="bi bi-download"></i></a>
+        </div>
+        <div class="report-card">
+            <span><i class="bi bi-file-earmark-medical-fill text-info"></i> consultation_notes.doc</span>
+            <a href="#" title="Download"><i class="bi bi-download"></i></a>
+        </div>
+    </div>
+
+    <div id="uploadSection" class="d-none">
+        <label class="form-label"><strong>Upload New Medical Report</strong></label>
+        <div class="upload-box">
+            <label for="fileInput">
+                <i class="bi bi-cloud-arrow-up"></i><br>
+                <strong>Click or drag files here to upload</strong>
+                <p class="text-muted small mt-2">Supported formats: PDF, JPG, PNG, DOC, DOCX</p>
+            </label>
+            <input type="file" id="fileInput">
+        </div>
+        <button class="btn btn-primary mt-3">
+            <i class="bi bi-cloud-upload-fill me-2"></i> Upload File
+        </button>
+    </div>
+</div>
+
+<footer class="text-center py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">QUECARE</h6>
+                <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                <div class="d-flex justify-content-start">
+                </div>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Explore</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../patientHome/index.html" class="nav-link p-0">Home</a></li>
+                    <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                    <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                    <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                    <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">About Us</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                    <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                    <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Contact</h6>
+                <p class="small" style="color: white;">+91 9171015834</p>
+                <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function triggerEmergency() {
+        alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+    }
+
+    const viewBtn = document.getElementById("viewBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const viewSection = document.getElementById("viewSection");
+    const uploadSection = document.getElementById("uploadSection");
+
+    viewBtn.addEventListener("click", () => {
+        viewSection.classList.remove("d-none");
+        uploadSection.classList.add("d-none");
+        viewBtn.classList.add("active");
+        uploadBtn.classList.remove("active");
+    });
+
+    uploadBtn.addEventListener("click", () => {
+        viewSection.classList.add("d-none");
+        uploadSection.classList.remove("d-none");
+        uploadBtn.classList.add("active");
+        viewBtn.classList.remove("active");
+    });
+</script>
+
+</body>
+</html>

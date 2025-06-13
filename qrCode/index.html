@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QR Code Check-In | QueCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eaf4ff;
+            display: flex; /* For sticky footer */
+            flex-direction: column; /* For sticky footer */
+            min-height: 100vh; /* For sticky footer */
+        }
+ 
+        /* Navbar and Dropdown specific styles from other pages for consistency */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* Emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Added subtle shadow */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Bootstrap button styles for nav, for consistency */
+        .btn-primary {
+            background-color: #4a63f5;
+            border-color: #4a63f5;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3c5baf;
+            border-color: #3c5baf;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-tertiary {
+            background-color: #a7b7eb; /* A lighter blue/purple tone */
+            border-color: #a7b7eb;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #8493cc;
+            border-color: #8493cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #13324f; /* Original background color */
+            color: white;
+            padding: 30px 20px;
+            width: 100%;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        footer .list-unstyled li a {
+            color: white;
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+
+        /* QR Check-in Specific Styles */
+        .container.qr-container { /* Specific class for this page's container */
+            max-width: 600px;
+            margin-top: 50px;
+            margin-bottom: 50px; /* Add margin at bottom too */
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+ 
+        h1.qr-title { /* Specific class for the title */
+            font-size: 26px;
+            text-align: left;
+            margin-bottom: 25px; /* Added spacing */
+        }
+ 
+        .highlight {
+            color: #3d68ff;
+            font-weight: bold;
+        }
+ 
+        #reader {
+            width: 100%;
+            height: 250px; /* Kept original height, adjust if camera view is distorted */
+            margin: 20px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0; /* Subtle border for the scanner area */
+        }
+        /* Style for the video element inside reader to ensure it fills */
+        #reader video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover; /* Ensures video covers the area without distortion */
+        }
+ 
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+ 
+        .input-area input {
+            flex: 1;
+            padding: 12px 15px; /* More padding */
+            border-radius: 10px;
+            border: 1px solid #cce0ff; /* Subtle border */
+            background-color: #f3f7ff;
+            font-size: 16px;
+        }
+        .input-area input:focus {
+            outline: none;
+            border-color: #3d68ff;
+            box-shadow: 0 0 0 0.2rem rgba(61, 104, 255, 0.25);
+        }
+ 
+        .input-area button {
+            padding: 10px 20px;
+            background: #3d68ff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .input-area button:hover {
+            background: #294fd2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* New: Success Message Styles (Replaces the old .result) */
+        .check-in-success-message {
+            background-color: #d4edda; /* Light green background */
+            color: #155724; /* Dark green text */
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #c3e6cb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.1rem;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(20px); /* Start slightly below for animation */
+            animation: fadeInSlideUp 0.8s forwards; /* Animation for appearance */
+        }
+
+        .check-in-success-message i {
+            font-size: 4rem; /* Large checkmark icon */
+            color: #28a745; /* Green color for icon */
+        }
+
+        .check-in-success-message h3 {
+            font-weight: bold;
+            margin: 0;
+            color: #155724;
+        }
+
+        .check-in-success-message p {
+            margin: 0;
+            text-align: center;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+   
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+  
+      <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="navbar-collapse collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="../home/index.html">Home</a></li>
+  
+          <!-- Dropdown for Specialties -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Functionality
+            </a>
+            <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+              <li><a class="dropdown-item" href="/crowdMornitoring/index.html">Crowd Monitoring</a></li>
+              <li><a class="dropdown-item" href="../livetoken/index.html">Live Token Tracker</a></li>
+              <li><a class="dropdown-item" href="/secondOpinion/index.html">Second Opinion</a></li>
+              <li><a class="dropdown-item" href="../doctorAvailablity/index.html">Doctor Availability</a></li>
+              <li><a class="dropdown-item" href="../recoveryStatus/index.html">Recovery Status</a></li>
+              <li><a class="dropdown-item" href="../e-Prescription/index.html">E - Prescription</a></li>
+              <li><a class="dropdown-item" href="../qrCode/index.html">QR-Checkin</a></li>
+            </ul>
+          </li>
+  
+          <li class="nav-item"><a class="nav-link" href="../doctorChat/index.html">Chat</a></li>
+          
+          <!-- Emergency Dropdown Button -->
+          <li class="nav-item dropdown emergency-dropdown ms-2">
+            <button 
+              onclick="window.location.href='../emergency/index.html'" 
+              class="btn emergency-btn dropdown" 
+              type="button" 
+              id="emergencyDropdown" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false">
+              <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+            </button>
+          </li>
+          
+            
+          </li>
+
+          <li class="nav-item"><a class="nav-link" href="../Login/index.html">Sign Out</a></li>
+          <li class="nav-item ms-2">
+            <a class="btn btn-primary rounded-pill px-4" href="../bookings/index.html">Bookings</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+    
+    <div class="container qr-container">
+        <div id="qrInputSection">
+            <h1 class="qr-title" id="qrTitle">QR CODE <span class="highlight">SELF CHECK-IN</span></h1>
+        
+            <div id="reader"></div>
+        
+            <div class="input-area">
+                <input type="text" id="manualCode" placeholder="Or enter QR code manually...">
+                <button onclick="checkIn()">Check-In</button>
+            </div>
+        </div>
+
+        <div id="checkInSuccessMessage" class="check-in-success-message d-none">
+            <i class="bi bi-check-circle-fill"></i>
+            <h3>Check-in Successful!</h3>
+            <p>Your visit has been registered.</p>
+            <p>Code: <strong id="codeValue"></strong></p>
+            <p>Time: <strong id="timeValue"></strong></p>
+        </div>
+    </div>
+ 
+  
+
+<footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../home/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                        <li><a href="../doctorChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+
+        // Get references to the UI elements
+        const qrInputSection = document.getElementById('qrInputSection');
+        const qrTitle = document.getElementById('qrTitle');
+        const readerDiv = document.getElementById('reader');
+        const inputAreaDiv = document.querySelector('.input-area'); // Use class selector since it doesn't have an ID
+        const checkInSuccessMessage = document.getElementById('checkInSuccessMessage');
+        const codeValueSpan = document.getElementById('codeValue');
+        const timeValueSpan = document.getElementById('timeValue');
+        const manualCodeInput = document.getElementById('manualCode');
+
+        function checkIn(codeInput = null) {
+            const input = codeInput || manualCodeInput.value.trim();
+            if (!input) {
+                alert("Please enter or scan a code first!");
+                return;
+            }
+ 
+            const now = new Date().toLocaleString();
+            
+            // Update the success message content
+            codeValueSpan.textContent = input;
+            timeValueSpan.textContent = now;
+            
+            // Hide the QR scanner and manual input area
+            qrInputSection.classList.add('d-none');
+            
+            // Show the success message
+            checkInSuccessMessage.classList.remove('d-none');
+
+            // If the scanner is active, stop it
+            if (html5QrCode.isScanning) {
+                html5QrCode.stop().catch(err => console.error("Error stopping QR scanner:", err));
+            }
+        }
+ 
+        // Start QR scanner
+        const html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: 250 };
+ 
+        // Request camera permission and start scanning
+        html5QrCode.start(
+            { facingMode: "environment" }, // Prioritize rear camera
+            config,
+            qrCodeMessage => {
+                // QR code successfully scanned
+                html5QrCode.stop(); // Stop the scanner immediately after a successful scan
+                checkIn(qrCodeMessage); // Auto-check-in on scan
+            },
+            errorMessage => {
+                // Optional: You can log errors here if needed for debugging
+                // console.log(`QR code no longer in view, or error: ${errorMessage}`);
+            }
+        ).catch(err => {
+            // This catch block handles errors if the camera cannot be started at all
+            console.error("Unable to start camera:", err);
+            // Inform the user, perhaps suggesting manual input
+            alert("Unable to start camera. Please ensure camera permissions are granted or enter the QR code manually.");
+        });
+    </script>
+</body>
+</html>

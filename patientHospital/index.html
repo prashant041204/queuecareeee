@@ -1,0 +1,518 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUECARE - Hospital Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* QueCare Theme Colors and Font */
+        :root {
+            --que-primary: #0d6efd; /* Blue from buttons in main UI */
+            --que-secondary: #eaf2ff; /* Light blue background from main hero */
+            --que-dark-blue: #13324f; /* Dark blue from footer */
+            --que-red: #dc3545; /* Red from emergency button */
+            --que-light-gray: #f2f4f7; /* Light gray for dropdown item hover */
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif; /* Consistent font */
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Navbar styles - adapted from main QueCare UI */
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* QueCare primary blue */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Dropdown styles (reused from main UI) */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: var(--que-light-gray);
+        }
+
+        /* Emergency dropdown styles (reused from main UI) */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: var(--que-red);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: var(--que-red);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+
+        /* Hero Section - adapted from main QueCare UI */
+        .hero {
+            background-color: var(--que-secondary); /* Light blue background */
+            text-align: center;
+            padding: 80px 20px; /* Consistent padding */
+            color: #333; /* Dark text for readability on light background */
+        }
+        .hero h1 {
+            color: #333; /* Darker title */
+        }
+        .hero .text-primary {
+            color: var(--que-primary) !important; /* Use QueCare primary blue */
+        }
+        
+        /* Search Card */
+        .search-card {
+            background-color: white;
+            border-radius: 12px; /* Consistent border radius */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+            padding: 2.5rem;
+            margin-top: -60px; /* Pull it up into the hero */
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-card .form-label {
+            font-weight: 600; /* Bolder labels */
+            margin-bottom: 5px;
+        }
+
+        .search-card .form-select {
+            border-radius: 8px; /* Consistent input radius */
+            padding: 0.75rem 1rem;
+        }
+        
+        /* Primary Button Style - adapted from main QueCare UI */
+        .btn-primary {
+            background-color: var(--que-primary);
+            border-color: var(--que-primary);
+            padding: 0.75rem 2rem; /* Larger padding for main buttons */
+            border-radius: 50px; /* Pill shape */
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0a58ca; /* Slightly darker primary on hover */
+            border-color: #0a58ca;
+            transform: translateY(-2px);
+        }
+
+        /* Smaller primary button for 'View Details' */
+        .btn-sm.btn-primary {
+            padding: 0.5rem 1.25rem; /* Smaller padding */
+            font-size: 0.9rem;
+            border-radius: 50px; /* Still pill-shaped */
+        }
+
+        /* Hospital Card */
+        .hospital-card {
+            border: none; /* Remove default border */
+            border-left: 5px solid var(--que-primary); /* Use QueCare primary blue for accent */
+            margin-bottom: 1.8rem; /* Slightly more margin */
+            transition: all 0.3s ease;
+            border-radius: 12px; /* Consistent border radius */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Consistent shadow */
+            background-color: white;
+            padding: 1.5rem;
+        }
+        
+        .hospital-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+            transform: translateY(-5px); /* More pronounced lift on hover */
+        }
+        
+        .hospital-card h4 {
+            color: #2c3e50; /* Darker heading */
+            margin-bottom: 0.5rem;
+        }
+
+        .hospital-card .text-muted {
+            font-size: 0.95rem;
+        }
+
+        .hospital-card .rating {
+            color: #f39c12; /* Star rating color */
+            font-weight: 600;
+        }
+
+        /* Badges */
+        .badge {
+            font-size: 0.85em;
+            padding: 0.5em 0.8em;
+            border-radius: 50px; /* Pill-shaped badges */
+        }
+        .badge.bg-primary {
+            background-color: var(--que-primary) !important;
+        }
+        .badge.bg-success {
+            background-color: #28a745 !important; /* Standard success green */
+        }
+
+        /* Footer styles - copied from previous turn */
+        footer {
+            background-color: var(--que-dark-blue);
+            color: white;
+            padding: 30px 20px;
+        }
+        footer .list-unstyled a {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: white !important;
+        }
+        footer .text-muted.small {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        footer .bi {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/homewithout">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../patientQr/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link active" href="/patientHospital">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-5">FIND THE BEST <span class="text-primary">HOSPITALS</span></h1>
+            <p class="mt-3">Your trusted Medical Center, just a click away. Connects you with top healthcare facilities nearby.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="search-card">
+                    <h3 class="mb-4 text-center">Find the Right Hospital for Your Needs</h3>
+                    <form id="hospitalSearchForm">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="state" class="form-label">State</label>
+                                <select class="form-select" id="state" required>
+                                    <option value="" selected disabled>Select State</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option> </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="city" class="form-label">City</label>
+                                <select class="form-select" id="city" required disabled>
+                                    <option value="" selected disabled>Select City</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="specialty" class="form-label">Specialty</label>
+                                <select class="form-select" id="specialty" required>
+                                    <option value="" selected disabled>Select Specialty</option>
+                                    <option value="cardiology">Cardiology</option>
+                                    <option value="dermatology">Dermatology</option>
+                                    <option value="neurology">Neurology</option>
+                                    <option value="orthopedics">Orthopedics</option>
+                                    <option value="pediatrics">Pediatrics</option>
+                                    <option value="oncology">Oncology</option>
+                                    <option value="gastroenterology">Gastroenterology</option>
+                                    <option value="nephrology">Nephrology</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">Search Hospitals</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="hospitalResults" class="container my-5" style="display: none;">
+        <h2 class="mb-4 text-center">Recommended Hospitals</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card hospital-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h4 id="hospital1Name">City General Hospital</h4>
+                        <div class="rating fs-5">★★★★☆ <small class="text-muted">(4.2)</small></div>
+                    </div>
+                    <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i> <span id="hospital1Address">123 Medical Drive</span></p>
+                    <p class="mb-3" id="hospital1Specialty">Top-rated facility with excellent cardiology department and 24/7 emergency care.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary" id="hospital1Badge">Cardiology</span>
+                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card hospital-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h4 id="hospital2Name">Sunrise Medical Center</h4>
+                        <div class="rating fs-5">★★★★★ <small class="text-muted">(4.8)</small></div>
+                    </div>
+                    <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i> <span id="hospital2Address">456 Health Ave</span></p>
+                    <p class="mb-3" id="hospital2Specialty">State-of-the-art facility with renowned specialists.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary" id="hospital2Badge">Dermatology</span>
+                        <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </section>
+
+   <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../patientHome/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                        <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Emergency function placeholder
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+
+        // Indian states and cities data
+        const cityData = {
+            'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
+            'Delhi': ['New Delhi', 'Noida', 'Gurgaon', 'Faridabad', 'Ghaziabad'],
+            'Karnataka': ['Bengaluru', 'Mysuru', 'Hubli', 'Mangaluru', 'Belagavi'],
+            'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem'],
+            'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi', 'Agra', 'Prayagraj'],
+            'West Bengal': ['Kolkata', 'Howrah', 'Durgapur', 'Asansol', 'Siliguri'],
+            'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'],
+            'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Bikaner'],
+            'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain'] // Added Bhopal
+        };
+
+        // State change handler
+        document.getElementById('state').addEventListener('change', function() {
+            const state = this.value;
+            const citySelect = document.getElementById('city');
+            
+            citySelect.innerHTML = '<option value="" selected disabled>Select City</option>';
+            citySelect.disabled = !state;
+            
+            if (state && cityData[state]) {
+                cityData[state].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+                citySelect.disabled = false;
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('hospitalSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const state = document.getElementById('state').value;
+            const city = document.getElementById('city').value;
+            const specialty = document.getElementById('specialty').value;
+            
+            if (!state || !city || !specialty) {
+                alert('Please select state, city and specialty!');
+                return;
+            }
+            
+            // Update results with selected location/specialty
+            // Note: This is static data for demonstration. In a real app, this would be fetched from a database.
+            document.getElementById('hospital1Name').textContent = `MediCare Hospital, ${city}`;
+            document.getElementById('hospital1Address').textContent = `Near City Center, ${city}, ${state}`;
+            document.getElementById('hospital1Specialty').textContent = `Leading ${specialty} facility with experienced doctors.`;
+            document.getElementById('hospital1Badge').textContent = specialty.charAt(0).toUpperCase() + specialty.slice(1);
+            
+            document.getElementById('hospital2Name').textContent = `Global Health Institute, ${city}`;
+            document.getElementById('hospital2Address').textContent = `Knowledge Park, ${city}, ${state}`;
+            document.getElementById('hospital2Specialty').textContent = `Advanced medical center specializing in ${specialty}.`;
+            document.getElementById('hospital2Badge').textContent = specialty.charAt(0).toUpperCase() + specialty.slice(1);
+            
+            // Show results
+            document.getElementById('hospitalResults').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('hospitalResults').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>

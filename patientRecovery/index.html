@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Recovery Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #eaf4ff; /* Light blue background */
+            display: flex;
+            flex-direction: column; /* For sticky footer */
+            min-height: 100vh; /* For sticky footer */
+        }
+        /* Navbar and Dropdown specific styles from other pages for consistency */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* Emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Added subtle shadow */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #13324f; /* Original background color */
+            color: white;
+            padding: 30px 20px;
+            width: 100%;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        footer .list-unstyled li a {
+            color: white;
+            text-decoration: none;
+        }
+        footer .list-unstyled li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content Container Styles - Correctly placed */
+        .main-content-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            max-width: 450px; /* Slightly increased max-width */
+            width: 90%;
+            text-align: center;
+            margin: 40px auto; /* Center with margin, adjust top margin as needed */
+        }
+ 
+        .title-main {
+            color: #2c2c2c;
+            font-weight: bold;
+            font-size: 28px; /* Slightly larger */
+        }
+ 
+        .title-sub {
+            color: #3d68ff;
+            font-size: 28px; /* Slightly larger */
+        }
+ 
+        .form {
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+ 
+        .form input {
+            padding: 12px 18px; /* More padding */
+            border: 1px solid #cce0ff; /* Subtle border */
+            border-radius: 12px;
+            background: #e9f2ff; /* Lighter background */
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        .form input:focus {
+            outline: none;
+            border-color: #3d68ff;
+            box-shadow: 0 0 0 0.2rem rgba(61, 104, 255, 0.25);
+        }
+ 
+        .status-title {
+            color: #333;
+            font-size: 20px; /* Slightly larger */
+            margin-bottom: 20px;
+            font-weight: 600; /* Bolder */
+        }
+ 
+        .status-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+ 
+        .status-box {
+            padding: 15px; /* More padding */
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle initial shadow */
+        }
+ 
+        .status-box:hover {
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Enhanced shadow on hover */
+        }
+ 
+        .status-label {
+            margin: 0;
+            font-weight: bold;
+            font-size: 17px; /* Slightly larger */
+        }
+        .status-box small {
+            font-size: 0.9em; /* Smaller descriptive text */
+            opacity: 0.9;
+        }
+ 
+        .red { background: #ff7b7b; } /* Slightly softer red */
+        .orange { background: #ffbe6d; color: #333; } /* Softer orange, ensured dark text */
+        .green { background: #7ade7a; } /* Softer green */
+ 
+        .status-box.selected {
+            border: 3px solid #3d68ff;
+            box-shadow: 0 0 15px rgba(61, 104, 255, 0.3); /* Stronger shadow when selected */
+            transform: translateY(-1px); /* Less lift when selected */
+        }
+ 
+        .submit-btn {
+            padding: 14px 30px; /* More padding */
+            font-size: 17px; /* Slightly larger font */
+            background: #3d68ff;
+            color: white;
+            border: none;
+            border-radius: 30px; /* More rounded */
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Initial shadow */
+        }
+ 
+        .submit-btn:hover {
+            background: #294fd2;
+            transform: translateY(-2px); /* Subtle lift */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* Stronger shadow on hover */
+        }
+
+        /* Bootstrap button styles for nav, for consistency */
+        .btn-primary {
+            background-color: #4a63f5;
+            border-color: #4a63f5;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3c5baf;
+            border-color: #3c5baf;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-tertiary {
+            background-color: #a7b7eb; /* A lighter blue/purple tone */
+            border-color: #a7b7eb;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #8493cc;
+            border-color: #8493cc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* New: Success Message Styles */
+        .success-message {
+            background-color: #d4edda; /* Light green background */
+            color: #155724; /* Dark green text */
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #c3e6cb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.1rem;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(20px); /* Start slightly below for animation */
+            animation: fadeInSlideUp 0.8s forwards; /* Animation for appearance */
+        }
+
+        .success-message i {
+            font-size: 4rem; /* Large checkmark icon */
+            color: #28a745; /* Green color for icon */
+        }
+
+        .success-message h3 {
+            font-weight: bold;
+            margin: 0;
+            color: #155724;
+        }
+
+        .success-message p {
+            margin: 0;
+            text-align: center;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../patientHospital/index.html">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-tertiary rounded-pill px-4" href="../emergencyInformation/index.html">
+                            Emergency Info
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav> 
+
+    <div class="main-content-container">
+        <h1><span class="title-main">RECOVERY</span> <span class="title-sub">STATUS</span></h1>
+        
+        <form class="form" id="recoveryForm">
+            <input type="text" placeholder="Name:" required="">
+            <input type="number" placeholder="Age:" required="">
+            <input type="text" placeholder="Hospital:" required="">
+            <input type="date" placeholder="Date of visit:" required="">
+            <input type="text" placeholder="Diagnosis:" required="">
+        </form>
+    
+        <h2 class="status-title" id="statusTitle">YOUR CURRENT STATUS</h2>
+    
+        <div class="status-options" id="statusOptions">
+            <div class="status-box red" data-value="Needs Follow-Up">
+                <p class="status-label">Needs Follow-Up</p>
+                <small>Symptoms persist, requiring a doctor’s review.</small>
+            </div>
+            <div class="status-box orange" data-value="Still Under Care">
+                <p class="status-label">Still Under Care</p>
+                <small>Requires ongoing treatment or monitoring.</small>
+            </div>
+            <div class="status-box green" data-value="Fully Recovered">
+                <p class="status-label">Fully Recovered</p>
+                <small>No further medical attention needed.</small>
+            </div>
+        </div>
+    
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit</button>
+
+        <div id="successMessage" class="success-message d-none">
+            <i class="bi bi-check-circle-fill"></i>
+            <h3>Request Submitted!</h3>
+            <p>Your recovery status has been updated.</p>
+            <p id="submittedStatus"></p>
+        </div>
+    </div>
+ 
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../patientHome/index.html" class="nav-link p-0">Home</a></li>
+                        <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                        <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+
+        const statusBoxes = document.querySelectorAll(".status-box");
+        let selectedStatus = "";
+    
+        statusBoxes.forEach(box => {
+            box.addEventListener("click", () => {
+                statusBoxes.forEach(b => b.classList.remove("selected"));
+                box.classList.add("selected");
+                selectedStatus = box.getAttribute("data-value");
+            });
+        });
+    
+        function submitForm() {
+            event.preventDefault(); // Prevent default form submission
+    
+            if (!selectedStatus) {
+                alert("Please select your current status.");
+                return;
+            }
+    
+            // Get form elements by ID for hiding
+            const recoveryForm = document.getElementById("recoveryForm");
+            const statusTitle = document.getElementById("statusTitle");
+            const statusOptions = document.getElementById("statusOptions");
+            const submitBtn = document.getElementById("submitBtn");
+            const successMessage = document.getElementById("successMessage");
+            const submittedStatusText = document.getElementById("submittedStatus");
+
+            // Hide the form and related elements
+            recoveryForm.classList.add("d-none");
+            statusTitle.classList.add("d-none");
+            statusOptions.classList.add("d-none");
+            submitBtn.classList.add("d-none");
+            
+            // Populate and show the success message
+            submittedStatusText.innerHTML = `Your selected status: <strong>${selectedStatus}</strong>`;
+            successMessage.classList.remove("d-none"); // Make visible
+        }
+    </script>
+</body>
+</html>

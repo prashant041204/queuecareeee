@@ -1,0 +1,467 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUECARE - About Us</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* QueCare Theme Colors and Font */
+        :root {
+            --que-primary: #0d6efd; /* Blue from buttons in main UI */
+            --que-secondary: #eaf2ff; /* Light blue background from main hero */
+            --que-dark-blue: #13324f; /* Dark blue from footer */
+            --que-red: #dc3545; /* Red from emergency button */
+            --que-light-gray: #f2f4f7; /* Light gray for dropdown item hover */
+            --que-text-dark: #2c3e50; /* Darker text color for headings */
+            --que-card-bg: #ecf6ff; /* Background for feature/function cards */
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif; /* Consistent font */
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Navbar styles - adapted from main QueCare UI */
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* QueCare primary blue */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Dropdown styles (reused from main UI) */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: var(--que-light-gray);
+        }
+
+        /* Emergency dropdown styles (reused from main UI) */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: var(--que-red);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: var(--que-red);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--que-secondary); /* Light blue background */
+            text-align: center;
+            padding: 80px 20px; /* Consistent padding */
+            color: #333; /* Dark text for readability on light background */
+        }
+        .hero h1 {
+            color: var(--que-text-dark); /* Darker title */
+            margin-bottom: 1rem;
+        }
+        .hero .text-primary {
+            color: var(--que-primary) !important; /* Use QueCare primary blue */
+        }
+
+        /* Section Styling */
+        section {
+            padding: 60px 20px; /* Consistent section padding */
+        }
+        section:nth-of-type(odd) { /* Alternate background for sections */
+            background-color: #f8f9fa; /* Light grey */
+        }
+        section h2 {
+            color: var(--que-text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        /* Card Styling for Team Members/Values */
+        .themed-card {
+            padding: 30px;
+            border-radius: 12px;
+            background: var(--que-card-bg); /* Light blue background for cards */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%; /* Ensure cards in a row have equal height */
+        }
+        .themed-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .themed-card h5 {
+            color: var(--que-primary);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .themed-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+        .themed-card i {
+            font-size: 2.5rem;
+            color: var(--que-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Team member specific card styling (similar to doctor gallery) */
+        .team-card {
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        .team-card img {
+            width: 150px; /* Fixed width for consistency */
+            height: 150px; /* Fixed height for consistency */
+            object-fit: cover;
+            border-radius: 50%; /* Circular images */
+            border: 4px solid var(--que-primary); /* Primary accent border */
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .team-label {
+            font-weight: 600;
+            color: var(--que-text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        .team-role {
+            color: var(--que-primary);
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 0;
+        }
+
+        /* Footer styles - copied from previous turn */
+        footer {
+            background-color: var(--que-dark-blue);
+            color: white;
+            padding: 30px 20px;
+        }
+        footer .list-unstyled a {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: white !important;
+        }
+        footer .text-muted.small {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        footer .bi {
+            font-size: 1.5rem;
+            color: white; /* Ensure icons are white */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/homewithout">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/homewithout">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../patientQr/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="/patientHospital">Hospitals</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link active" href="#">About Us</a></li>
+
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-5">LEARN MORE ABOUT <span class="text-primary">QUECARE!</span></h1>
+            <p class="mt-3">We are committed to transforming healthcare accessibility for everyone.</p>
+        </div>
+    </section>
+
+    <section class="container text-center">
+        <h2>Our Mission</h2>
+        <p class="lead mb-5">"Queue Less, Care More!" is not just a slogan; it's our foundational promise.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <p>Our mission at QueCare is to revolutionize patient experiences by significantly reducing wait times and streamlining healthcare services. We leverage innovative technology to connect patients with medical facilities efficiently, ensuring timely and compassionate care. We aim to empower patients with control over their healthcare journey and provide hospitals with tools to optimize their operations, leading to better outcomes for all.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-light">
+        <div class="container">
+            <h2 class="text-center">Our Story</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <img src="https://images.unsplash.com/photo-1576091160550-fd42a8b049db?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Our Story" class="img-fluid rounded-3 shadow-sm">
+                </div>
+                <div class="col-md-6">
+                    <p>QueCare was founded in 2023 with a simple yet powerful vision: to eliminate the frustration of long queues and waiting times in healthcare. Observing the challenges faced by patients and medical staff alike, our founders envisioned a digital platform that could bring efficiency and transparency to the healthcare ecosystem.</p>
+                    <p>From humble beginnings, developing our first live token tracker, we've grown into a comprehensive platform offering a suite of solutions from crowd monitoring to online consultations. Every step of our journey has been driven by a passion to make quality healthcare more accessible, convenient, and humane for millions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container text-center">
+        <h2>Our Core Values</h2>
+        <p class="lead mb-5">These principles guide every decision and innovation at QueCare.</p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="themed-card">
+                    <i class="bi bi-heart-fill"></i>
+                    <h5>Empathy</h5>
+                    <p>We approach every challenge with compassion, understanding the patient's perspective first.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="themed-card">
+                    <i class="bi bi-lightbulb-fill"></i>
+                    <h5>Innovation</h5>
+                    <p>We continuously seek new ways to improve healthcare accessibility and efficiency through technology.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="themed-card">
+                    <i class="bi bi-people-fill"></i>
+                    <h5>Accessibility</h5>
+                    <p>We strive to make quality healthcare services available and easy to use for everyone, everywhere.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="themed-card">
+                    <i class="bi bi-shield-fill"></i>
+                    <h5>Trust</h5>
+                    <p>We build lasting relationships through transparency, reliability, and safeguarding patient data.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="themed-card">
+                    <i class="bi bi-award-fill"></i>
+                    <h5>Excellence</h5>
+                    <p>We are committed to delivering the highest standards in our technology, service, and patient care.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-light">
+        <div class="container text-center">
+            <h2>Meet Our Dedicated Team</h2>
+            <p class="lead mb-5">The passionate individuals behind QueCare's vision.</p>
+            <div class="row justify-content-center g-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150/0d6efd/FFFFFF?text=CEO" alt="Team Member 1">
+                        <div class="team-label">DRISHTI CHOUDHARY<br><span class="team-role">TEAM LEAD</span></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150/0d6efd/FFFFFF?text=CTO" alt="Team Member 2">
+                        <div class="team-label">PRASHANT DUBEY<br><span class="team-role">TEAM MEMBER</span></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150/0d6efd/FFFFFF?text=COO" alt="Team Member 3">
+                        <div class="team-label">VAISHNAVI DUBEY<br><span class="team-role">TEAM MEMBER</span></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150/0d6efd/FFFFFF?text=Head+of+Prod" alt="Team Member 4">
+                        <div class="team-label">SAHIL DALWANI<br><span class="team-role">TEAM MEMBER</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/homewithout" class="nav-link p-0" style="color: white;">Home</a></li>
+                        <li><a href="#" class="nav-link p-0" style="color: white;">Doctors</a></li>
+                        <li><a href="/patientHospital" class="nav-link p-0" style="color: white;">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0" style="color: white;">Specialties</a></li>
+                        <li><a href="#" class="nav-link p-0" style="color: white;">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="nav-link p-0" style="color: white;">Our Team</a></li>
+                        <li><a href="#" class="nav-link p-0" style="color: white;">Terms & Conditions</a></li>
+                        <li><a href="#" class="nav-link p-0" style="color: white;">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal University kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Emergency function placeholder (copied from main UI)
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+    </script>
+
+</body>
+</html>

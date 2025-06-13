@@ -1,0 +1,472 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUECARE - FAQs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* QueCare Theme Colors and Font */
+        :root {
+            --que-primary: #0d6efd; /* Blue from buttons in main UI */
+            --que-secondary: #eaf2ff; /* Light blue background from main hero */
+            --que-dark-blue: #13324f; /* Dark blue from footer */
+            --que-red: #dc3545; /* Red from emergency button */
+            --que-light-gray: #f2f4f7; /* Light gray for dropdown item hover */
+            --que-text-dark: #2c3e50; /* Darker text color for headings */
+            --que-card-bg: #ecf6ff; /* Background for feature/function cards */
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif; /* Consistent font */
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Navbar styles - adapted from main QueCare UI */
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* QueCare primary blue */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Dropdown styles (reused from main UI) */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: var(--que-light-gray);
+        }
+
+        /* Emergency dropdown styles (reused from main UI) */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: var(--que-red);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: var(--que-red);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--que-secondary); /* Light blue background */
+            text-align: center;
+            padding: 80px 20px; /* Consistent padding */
+            color: #333; /* Dark text for readability on light background */
+        }
+        .hero h1 {
+            color: var(--que-text-dark); /* Darker title */
+            margin-bottom: 1rem;
+        }
+        .hero .text-primary {
+            color: var(--que-primary) !important; /* Use QueCare primary blue */
+        }
+
+        /* FAQ Section Styling */
+        .faq-section {
+            padding: 60px 20px;
+            background-color: white;
+        }
+        .faq-section h2 {
+            color: var(--que-text-dark);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .accordion-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden; /* Ensures border-radius applies to content */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+        .accordion-button {
+            background-color: var(--que-card-bg); /* Light blue background for buttons */
+            color: var(--que-text-dark);
+            font-weight: 600;
+            padding: 18px 25px;
+            border-bottom: 1px solid #e0e0e0;
+            border-radius: 8px 8px 0 0;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: var(--que-primary); /* Primary blue when active */
+            color: white;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
+        }
+        .accordion-button:not(.collapsed)::after {
+            filter: brightness(0) invert(1); /* Invert arrow color for white background */
+        }
+        .accordion-body {
+            padding: 20px 25px;
+            color: #555;
+            line-height: 1.7;
+            background-color: white; /* White background for answer content */
+        }
+
+        /* Footer styles - copied from previous turn */
+        footer {
+            background-color: var(--que-dark-blue);
+            color: white;
+            padding: 30px 20px;
+        }
+        footer .list-unstyled a {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: white !important;
+        }
+        footer .text-muted.small {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        footer .bi {
+            font-size: 1.5rem;
+            color: white; /* Ensure icons are white */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/homewithout">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/homewithout">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../patientQr/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="/patientHospital">Hospitals</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link" href="/aboutus">About Us</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link" href="/terms-conditions">Terms & Conditions</a></li>
+
+                    <li class="nav-item"><a class="nav-link active" href="#">FAQs</a></li>
+
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-5">GOT QUESTIONS? WE'VE GOT <span class="text-primary">ANSWERS!</span></h1>
+            <p class="mt-3">Your comprehensive guide to understanding and using QueCare.</p>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="accordion" id="faqAccordion">
+
+                        <h4 class="mt-4 mb-3 text-muted">General Questions</h4>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    What is QueCare?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    QueCare is an innovative healthcare management platform designed to streamline patient experiences by reducing wait times, optimizing hospital operations, and improving access to medical services through features like live token tracking, online appointments, second opinions, and more.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    How does QueCare help reduce wait times?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    QueCare utilizes real-time crowd monitoring, live token tracking, and efficient appointment scheduling systems. This allows patients to monitor queue lengths remotely and hospitals to manage patient flow more effectively, significantly cutting down on physical waiting times.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Is QueCare free to use for patients?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Many core features of QueCare, such as general appointment booking and live token tracking, are free for patients. Premium features like advanced online consultations or specific medical report analysis might involve a fee, which will be clearly indicated.
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-5 mb-3 text-muted">Account & Booking</h4>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    How do I create an account?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    You can create an account by clicking the "Sign Up" or "Register" button on our homepage. You'll need to provide some basic information like your name, email, and phone number, and create a secure password.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    How do I book an appointment?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Log in to your QueCare account, navigate to the "Book Now" section or select a specific hospital/doctor. Choose your desired specialty, doctor (if applicable), date, and time slot. Confirm your details, and your appointment will be booked. You will receive a confirmation.
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-5 mb-3 text-muted">Services & Features</h4>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                    What is "Crowd Monitoring" for?
+                                </button>
+                            </h2>
+                            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Crowd Monitoring provides real-time information about the number of patients currently in different departments or queues within a hospital. This helps patients avoid peak times and hospitals to manage their resources more effectively.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                    How does the "Second Opinion" service work?
+                                </button>
+                            </h2>
+                            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Our "Second Opinion" feature allows you to securely upload your medical reports and symptoms to receive a professional opinion from another specialist. This helps you make informed decisions about your health.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                    Is "Online Consultation" secure and private?
+                                </button>
+                            </h2>
+                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, all online consultations on QueCare are conducted through secure, encrypted channels to ensure your privacy and data security. Our platform adheres to strict data protection standards.
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-5 mb-3 text-muted">Technical Support</h4>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingNine">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                                    I forgot my password, what do I do?
+                                </button>
+                            </h2>
+                            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    On the login page, click on "Forgot Password?". You will be guided through a process to reset your password using your registered email address or phone number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTen">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                    Who do I contact for technical issues?
+                                </button>
+                            </h2>
+                            <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    For any technical issues or support, please visit our "Contact Us" page or send an email to care@quecare.com. Our support team will assist you promptly.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <footer class="text-center py-4" style="background-color: #13324f; color: white;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">QUECARE</h6>
+          <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+          <div class="d-flex justify-content-start">
+          </div>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">Explore</h6>
+          <ul class="list-unstyled small">
+            <li><a href="#" class="nav-link p-0" style="color: white;">Home</a></li>
+            <li><a href="../patientDoctorA/index.html" class="nav-link p-0" style="color: white;">Doctors</a></li>
+            <li><a href="../patientHospital/index.html" class="nav-link p-0" style="color: white;">Hospitals</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">Specialties</a></li>
+            <li><a href="../patientChat/index.html" class="nav-link p-0" style="color: white;">Consultation</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">About Us</h6>
+          <ul class="list-unstyled small">
+            <li><a href="../aboutUs/index.html" class="nav-link p-0" style="color: white;">Our Team</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">Terms & Conditions</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">FAQs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">Contact</h6>
+          <p class="small" style="color: white;">+91 9171015834</p>
+          <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12 text-center">
+          <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function triggerEmergency() {
+      alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+    }
+  </script>
+
+  </body>
+</html>

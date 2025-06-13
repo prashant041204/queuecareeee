@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Counselling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoGFiRmyUXU/LsDqEUAbRGv0WWSFzSlQts0RVSjUlchwCaQuUjVmJ3xlNylg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eaf4ff;
+            line-height: 1.6;
+            color: #333;
+        }
+        /* Custom dropdown menu styles to override Bootstrap defaults for specific appearance */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* New emergency dropdown styles - Keeping relevant ones, removing redundant from Bootstrap */
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .back-to-home {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            text-decoration: none;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-to-home:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 32px;
+            text-align: left;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        .highlight {
+            color: #3d68ff;
+            font-weight: bold;
+        }
+
+        /* Doctor Selection Section */
+        .doctor-selection {
+            background: #f0f6ff;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .doctor-selection h3 {
+            font-size: 22px;
+            color: #3d68ff;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .doctor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            max-height: 400px; /* Limit height and make scrollable */
+            overflow-y: auto;
+            padding-right: 10px; /* Space for scrollbar */
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #e0eaff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .doctor-card.selected {
+            border-color: #3d68ff;
+            box-shadow: 0 0 0 3px rgba(61, 104, 255, 0.3);
+            background-color: #eaf4ff;
+        }
+
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #d9e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #3d68ff;
+            margin-bottom: 10px;
+            overflow: hidden; /* For actual images */
+        }
+
+        .doctor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .doctor-card h4 {
+            margin: 0;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .doctor-card p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* General layout remains similar */
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .actions button {
+            flex: 1;
+            background: #3d68ff;
+            color: white;
+            padding: 15px 20px;
+            font-size: 17px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .actions button:disabled {
+            background-color: #a0c3ff;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .actions button:hover:not(:disabled) {
+            background-color: #2e57d1;
+            transform: translateY(-2px);
+        }
+
+        .call-status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #3d68ff;
+            font-weight: bold;
+            display: none; /* Hide until call is active */
+        }
+
+        .call-timer {
+            font-size: 1.1em;
+            margin-left: 10px;
+            color: #555;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #f0f6ff;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card h3 {
+            font-size: 22px;
+            color: #3d68ff;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .video-box, .voice-box {
+            height: 250px;
+            background: #d9e7ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #3d68ff;
+            border: 2px dashed #a0c3ff;
+            position: relative;
+            overflow: hidden;
+            flex-grow: 1; /* Allow boxes to grow */
+        }
+
+        .video-box.active, .voice-box.active {
+            border: 2px solid #28a745;
+            background-color: #e6ffe6;
+        }
+
+        .live-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: normal;
+            display: none;
+        }
+
+        .video-box.active .live-indicator,
+        .voice-box.active .live-indicator {
+            display: block;
+        }
+
+        .chat-box {
+            height: 350px;
+            background: #f9faff;
+            border-radius: 12px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e0eaff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            background: #d9e7ff;
+            padding: 12px 18px;
+            border-radius: 15px;
+            width: fit-content;
+            max-width: 80%;
+            align-self: flex-start;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            word-wrap: break-word; /* Ensure long words break */
+        }
+
+        .message.user {
+            background: #3d68ff;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message .sender-icon {
+            margin-right: 8px;
+        }
+
+        .input-area {
+            display: flex;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .input-area input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #cce0ff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-area input[type="text"]:focus {
+            border-color: #3d68ff;
+            box-shadow: 0 0 0 3px rgba(61, 104, 255, 0.2);
+        }
+
+        .input-area button {
+            padding: 12px 25px;
+            border: none;
+            background: #3d68ff;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-area button:disabled {
+            background-color: #a0c3ff;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-area button:hover:not(:disabled) {
+            background-color: #2e57d1;
+            transform: translateY(-1px);
+        }
+
+        .session-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0eaff;
+        }
+
+        .session-controls button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .session-controls button.end-call {
+            background-color: #dc3545;
+        }
+
+        .session-controls button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+                text-align: center;
+            }
+
+            .actions, .session-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .actions button, .session-controls button {
+                width: 100%;
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .back-to-home {
+                position: static;
+                margin-bottom: 20px;
+                width: fit-content;
+            }
+            .doctor-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        footer {
+            background-color: #13324f;
+            color: white;
+            padding: 30px 20px;
+            margin-top: 40px; /* Add some space above the footer */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">QUECARE</a> <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/home/">Home</a></li> <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Functionality
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="functionalityDropdown">
+                            <li><a class="dropdown-item" href="/crowdMonitoring/">Crowd Monitoring</a></li> <li><a class="dropdown-item" href="/livetoken/">Live Token Tracker</a></li> <li><a class="dropdown-item" href="/secondOpinion/">Second Opinion</a></li> <li><a class="dropdown-item" href="/doctorAvailability/">Doctor Availability</a></li> <li><a class="dropdown-item" href="/recoveryStatus/">Recovery Status</a></li> <li><a class="dropdown-item" href="/e-Prescription/">E - Prescription</a></li> <li><a class="dropdown-item" href="/qrCode/">QR-Checkin</a></li> </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/doctorChat/">Chat</a></li> <li class="nav-item ms-2">
+                        <button 
+                            onclick="window.location.href='/emergency/'"  class="btn emergency-btn" 
+                            type="button">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/Login/">Sign Out</a></li> <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="/bookings/">Bookings</a> </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/home/" class="back-to-home"> <i class="fas fa-home"></i> Back to Home
+        </a>
+
+        <h1>ONLINE <span class="highlight">COUNSELLING</span></h1>
+
+        <div class="doctor-selection">
+            <h3>Select a Doctor</h3>
+            <div class="doctor-list" id="doctorList">
+            </div>
+            <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #777;">
+                <i class="fas fa-info-circle"></i> Please select a doctor before starting a call or chat.
+            </p>
+        </div>
+
+        <div class="actions">
+            <button id="voiceCallBtn" disabled><i class="fas fa-phone-alt"></i> Start Voice Call</button>
+            <button id="videoCallBtn" disabled><i class="fas fa-video"></i> Start Video Call</button>
+            <button id="chatBtn" disabled><i class="fas fa-comments"></i> Open Chat</button>
+        </div>
+
+        <div class="call-status" id="callStatus">No active call</div>
+
+        <div class="section-grid">
+            <div class="card">
+                <h3>Doctor Video Panel</h3>
+                <div class="video-box" id="doctorVideoPanel">
+                    <span class="live-indicator">LIVE</span>
+                    Video Feed
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Voice Call Panel</h3>
+                <div class="voice-box" id="voiceCallPanel">
+                    <span class="live-indicator">LIVE</span>
+                    Voice Call Status
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="chatSection" style="margin-top: 30px;">
+            <h3>Chat with <span id="selectedDoctorNameChat" class="highlight">Doctor</span></h3>
+            <div class="chat-box" id="chatBox">
+                <div class="message">
+                    <span class="sender-icon">👨‍⚕️</span> Please select a doctor to begin chatting.
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="chatInput" placeholder="Type your message..." disabled>
+                <button id="sendChatBtn" disabled><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+
+        <div class="session-controls" id="sessionControls" style="display: none;">
+            <button class="end-call"><i class="fas fa-phone-slash"></i> End Call</button>
+            <button id="muteBtn"><i class="fas fa-microphone"></i> Mute/Unmute</button>
+            <button id="videoToggleBtn"><i class="fas fa-video"></i> Turn Video On/Off</button>
+        </div>
+    </div>
+
+    <footer class="text-center py-4">
+        <div class="container"> <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/home/" class="nav-link p-0">Home</a></li> <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                        <li><a href="/doctorChat/" class="nav-link p-0">Consultation</a></li> </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/aboutUs/" class="nav-link p-0">Our Team</a></li> <li><a href="/termandCondition/" class="nav-link p-0">Terms & Conditions</a></li> <li><a href="/faqs/" class="nav-link p-0">FAQs</a></li> </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal University Kotri Kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+    <script>
+        // Mock Doctor Data - KEEP ONLY THIS DEFINITION
+        const doctors = [
+            { id: 1, name: 'Dr. Emily White', specialty: 'General Physician', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=EW' },
+            { id: 2, name: 'Dr. John Smith', specialty: 'Psychologist', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=JS' },
+            { id: 3, name: 'Dr. Sarah Lee', specialty: 'Psychiatrist', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=SL' },
+            { id: 4, name: 'Dr. David Kim', specialty: 'Counselor', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=DK' },
+            { id: 5, name: 'Dr. Priya Sharma', specialty: 'Therapist', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=PS' },
+            { id: 6, name: 'Dr. Rahul Verma', specialty: 'Family Counselor', avatar: 'https://via.placeholder.com/80/d9e7ff/3d68ff?text=RV' }
+        ];
+
+        let selectedDoctor = null;
+        let callActive = false;
+        let currentCallType = ''; // 'voice', 'video', or ''
+        let callTimerInterval;
+        let seconds = 0;
+
+        // Get DOM elements
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        const voiceCallBtn = document.getElementById('voiceCallBtn');
+        const videoCallBtn = document.getElementById('videoCallBtn');
+        const chatBtn = document.getElementById('chatBtn');
+        const callStatusElement = document.getElementById('callStatus');
+        const sessionControls = document.getElementById('sessionControls');
+        const doctorVideoPanel = document.getElementById('doctorVideoPanel');
+        const voiceCallPanel = document.getElementById('voiceCallPanel');
+        const selectedDoctorNameChat = document.getElementById('selectedDoctorNameChat');
+        const muteBtn = document.getElementById('muteBtn'); // Added for direct access
+        const videoToggleBtn = document.getElementById('videoToggleBtn'); // Added for direct access
+
+        // --- Doctor Selection Logic ---
+        function renderDoctors() {
+            const doctorList = document.getElementById('doctorList');
+            doctorList.innerHTML = ''; // Clear existing list
+
+            doctors.forEach(doctor => {
+                const doctorCard = document.createElement('div');
+                doctorCard.className = 'doctor-card';
+                doctorCard.setAttribute('data-id', doctor.id);
+                doctorCard.innerHTML = `
+                    <div class="doctor-avatar">
+                        ${doctor.avatar.startsWith('http') ? `<img src="${doctor.avatar}" alt="${doctor.name[0]}"/>` : doctor.avatar}
+                    </div>
+                    <h4>${doctor.name}</h4>
+                    <p>${doctor.specialty}</p>
+                `;
+                // Use 'specialty' from the first doctors array, not 'specialization' from the second
+                doctorCard.addEventListener('click', () => selectDoctor(doctor));
+                doctorList.appendChild(doctorCard);
+            });
+        }
+
+        function selectDoctor(doctor) {
+            if (callActive) {
+                alert('Please end the current call before selecting a different doctor.');
+                return;
+            }
+
+            // Remove 'selected' class from previously selected doctor
+            const currentSelected = document.querySelector('.doctor-card.selected');
+            if (currentSelected) {
+                currentSelected.classList.remove('selected');
+            }
+
+            // Add 'selected' class to the new doctor
+            const newSelectedCard = document.querySelector(`.doctor-card[data-id="${doctor.id}"]`);
+            if (newSelectedCard) {
+                newSelectedCard.classList.add('selected');
+            }
+
+            selectedDoctor = doctor;
+            console.log('Selected doctor:', selectedDoctor.name);
+            updateActionButtonsState();
+            updateChatHeader();
+            displayInitialChatMessage();
+        }
+
+        function updateActionButtonsState() {
+            const isDisabled = selectedDoctor === null || callActive;
+            voiceCallBtn.disabled = isDisabled;
+            videoCallBtn.disabled = isDisabled;
+            chatBtn.disabled = selectedDoctor === null; // Chat can be enabled even if no call is active, as long as a doctor is selected
+            chatInput.disabled = selectedDoctor === null;
+            sendChatBtn.disabled = selectedDoctor === null;
+        }
+
+        function updateChatHeader() {
+            if (selectedDoctor) {
+                selectedDoctorNameChat.textContent = selectedDoctor.name;
+            } else {
+                selectedDoctorNameChat.textContent = 'Doctor';
+            }
+        }
+
+        function displayInitialChatMessage() {
+            chatBox.innerHTML = ''; // Clear previous messages
+            if (selectedDoctor) {
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message';
+                welcomeMessage.innerHTML = `<span class="sender-icon">👨‍⚕️</span> Hello! I'm Dr. ${selectedDoctor.name.split(' ')[1]}, your ${selectedDoctor.specialty}. How can I assist you today?`;
+                // Use 'specialty' from the first doctors array
+                chatBox.appendChild(welcomeMessage);
+            } else {
+                const promptMessage = document.createElement('div');
+                promptMessage.className = 'message';
+                promptMessage.innerHTML = '<span class="sender-icon">👨‍⚕️</span> Please select a doctor to begin chatting.';
+                chatBox.appendChild(promptMessage);
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // --- Call Management Logic ---
+        function updateCallStatusDisplay(status, timer = false) {
+            callStatusElement.style.display = 'block'; // Show status div when call is active
+            if (timer) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                callStatusElement.innerHTML = `${status} <span class="call-timer">(${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')})</span>`;
+            } else {
+                callStatusElement.textContent = status;
+            }
+        }
+
+        function startTimer() {
+            seconds = 0;
+            callTimerInterval = setInterval(() => {
+                seconds++;
+                updateCallStatusDisplay(`Call in progress with ${selectedDoctor.name} (${currentCallType} call)`, true);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(callTimerInterval);
+            seconds = 0;
+        }
+
+        function startVoiceCall() {
+            if (!selectedDoctor) {
+                alert('Please select a doctor first!');
+                return;
+            }
+            if (callActive) {
+                alert('A call is already active. Please end the current call first.');
+                return;
+            }
+            alert(`Initiating voice call with Dr. ${selectedDoctor.name}...`);
+            callActive = true;
+            currentCallType = 'voice';
+            voiceCallPanel.classList.add('active');
+            doctorVideoPanel.classList.remove('active'); // Ensure video panel is not active
+            sessionControls.style.display = 'flex';
+            updateCallStatusDisplay('Voice Call Active');
+            startTimer();
+            updateActionButtonsState(); // Disable main action buttons during a call
+            resetCallControlsIcons(); // Reset mute/video icons
+        }
+
+        function startVideoCall() {
+            if (!selectedDoctor) {
+                alert('Please select a doctor first!');
+                return;
+            }
+            if (callActive) {
+                alert('A call is already active. Please end the current call first.');
+                return;
+            }
+            alert(`Initiating video call with Dr. ${selectedDoctor.name}...`);
+            callActive = true;
+            currentCallType = 'video';
+            doctorVideoPanel.classList.add('active');
+            voiceCallPanel.classList.add('active'); // Voice also considered active during video
+            sessionControls.style.display = 'flex';
+            updateCallStatusDisplay('Video Call Active');
+            startTimer();
+            updateActionButtonsState(); // Disable main action buttons during a call
+            resetCallControlsIcons(); // Reset mute/video icons
+        }
+
+        function endCurrentCall() {
+            if (!callActive) {
+                alert('No active call to end.');
+                return;
+            }
+            const confirmEnd = confirm('Are you sure you want to end the call?');
+            if (confirmEnd) {
+                const durationMinutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const durationSeconds = (seconds % 60).toString().padStart(2, '0');
+                alert(`Call ended with Dr. ${selectedDoctor.name}: ${currentCallType}. Duration: ${durationMinutes}:${durationSeconds}`);
+
+                callActive = false;
+                currentCallType = '';
+                doctorVideoPanel.classList.remove('active');
+                voiceCallPanel.classList.remove('active');
+                sessionControls.style.display = 'none';
+                callStatusElement.style.display = 'none'; // Hide status div
+                updateCallStatusDisplay('No active call'); // Reset text for potential future calls
+                stopTimer();
+                updateActionButtonsState(); // Re-enable main action buttons after call
+            }
+        }
+
+        function toggleMute() {
+            if (!callActive) {
+                alert('No active call to mute/unmute.');
+                return;
+            }
+            if (muteBtn.innerHTML.includes('microphone-slash')) {
+                muteBtn.innerHTML = '<i class="fas fa-microphone"></i> Mute/Unmute';
+                alert('Microphone Unmuted');
+            } else {
+                muteBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> Mute/Unmute';
+                alert('Microphone Muted');
+            }
+        }
+
+        function toggleVideo() {
+            if (!callActive || currentCallType !== 'video') {
+                alert("Video can only be toggled during an active video call.");
+                return;
+            }
+
+            if (videoToggleBtn.innerHTML.includes('video-slash')) {
+                videoToggleBtn.innerHTML = '<i class="fas fa-video"></i> Turn Video On/Off';
+                doctorVideoPanel.innerHTML = '<span class="live-indicator">LIVE</span> Video Feed';
+                doctorVideoPanel.classList.add('active');
+                alert('Video On');
+            } else {
+                videoToggleBtn.innerHTML = '<i class="fas fa-video-slash"></i> Turn Video On/Off';
+                doctorVideoPanel.innerHTML = '<span class="live-indicator">LIVE</span> Video Off';
+                doctorVideoPanel.classList.remove('active');
+                alert('Video Off');
+            }
+        }
+
+        function resetCallControlsIcons() {
+            muteBtn.innerHTML = '<i class="fas fa-microphone"></i> Mute/Unmute';
+            videoToggleBtn.innerHTML = '<i class="fas fa-video"></i> Turn Video On/Off';
+        }
+
+        // --- Chat Functionality ---
+        function sendMessage() {
+            if (!selectedDoctor) {
+                alert('Please select a doctor to send a message.');
+                return;
+            }
+
+            const message = chatInput.value.trim();
+            if (message === '') return;
+
+            // User message
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user';
+            userMsgDiv.innerHTML = '<span class="sender-icon">🧑</span> ' + message;
+            chatBox.appendChild(userMsgDiv);
+            chatInput.value = ''; // Clear input immediately
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Simulate doctor's reply
+            setTimeout(() => {
+                const doctorReplyDiv = document.createElement('div');
+                doctorReplyDiv.className = 'message';
+                let replyText;
+                // Simple logic for replies based on doctor specialty
+                if (selectedDoctor.specialty.includes('Psychologist') || selectedDoctor.specialty.includes('Psychiatrist') || selectedDoctor.specialty.includes('Therapist') || selectedDoctor.specialty.includes('Counselor') || selectedDoctor.specialty.includes('Family Counselor')) {
+                    replyText = `Thank you for sharing, I understand this can be challenging. Let's explore this further.`;
+                } else {
+                    replyText = `Thanks for your message! I'll get back to you shortly.`;
+                }
+                doctorReplyDiv.innerHTML = `<span class="sender-icon">👨‍⚕️</span> (Dr. ${selectedDoctor.name.split(' ')[1]}): ${replyText}`;
+                // Use 'specialty' from the doctors array
+                chatBox.appendChild(doctorReplyDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1500); // Wait a bit for the "reply"
+        }
+
+        // Event listener for sending message on Enter key
+        chatInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Event listeners for call buttons - Removed onclick attributes from HTML for cleaner JS
+        voiceCallBtn.addEventListener('click', startVoiceCall);
+        videoCallBtn.addEventListener('click', startVideoCall);
+        document.querySelector('.session-controls .end-call').addEventListener('click', endCurrentCall);
+        muteBtn.addEventListener('click', toggleMute);
+        videoToggleBtn.addEventListener('click', toggleVideo);
+
+        // Event listener for chat button to scroll to chat section
+        chatBtn.addEventListener('click', () => {
+            document.getElementById('chatSection').scrollIntoView({behavior: 'smooth'});
+        });
+
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDoctors();
+            updateActionButtonsState(); // Disable buttons initially
+            displayInitialChatMessage(); // Show initial chat message
+            callStatusElement.style.display = 'none'; // Ensure status is hidden on load
+        });
+    </script>
+</body>
+</html>

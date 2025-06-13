@@ -1,0 +1,308 @@
+/* Universal Styles & Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    background-color: #f0f2f5;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Left Panel Styles (Blue Background) - No changes */
+.left-panel {
+    flex: 1;
+    background-color: #4C6EF5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    padding-left: 60px;
+    border-top-right-radius: 120px;
+    border-bottom-right-radius: 120px;
+    overflow: hidden;
+}
+
+.logo-brand {
+    display: flex;
+    align-items: center;
+    color: white;
+    z-index: 2;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    border-radius: 50%;
+}
+
+.brand-name {
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.baymax-robot {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) scale(1.05);
+    max-width: 100%;
+    height: auto;
+    z-index: 1;
+    opacity: 0.95;
+    filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* Right Panel Styles (Light Grey Background with Card) */
+.right-panel {
+    flex: 1;
+    background-color: #F0F2F5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.auth-card {
+    background-color: #E5EAFF;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    width: 400px;
+    max-width: 90%;
+    /* No animation here if only handling patient login internally */
+    /* Remove 'position: relative;' and 'overflow: hidden;' if only one view is active at a time,
+       or if you want to keep them for potential future dynamic content */
+}
+
+/* Base styles for the selection card and login form container */
+#selectionCard,
+.login-form-container {
+    display: flex; /* Default to flex, will be hidden by .hidden class */
+    flex-direction: column;
+    gap: 30px; /* Space between elements */
+    width: 100%;
+    /* No absolute positioning or transitions from this CSS for simpler approach */
+}
+
+
+/* Option Boxes (Doctor/Patient) - now applies to 'a' as well */
+.option-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%; /* Make option boxes fill available width */
+    text-decoration: none; /* Crucial for <a> tag to remove underline */
+    color: inherit; /* Ensure text color is inherited, then overridden if needed */
+}
+
+.option-box:hover {
+    background-color: #f7f7f7;
+    border-color: #a0a0a0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.option-box .icon {
+    font-size: 4.5em;
+    color: #4C6EF5;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.option-box:hover .icon {
+    color: #3B5BB2;
+}
+
+.option-text {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+
+/* Removed .mdi-placeholder as it's not in the HTML anymore */
+
+/* New CSS for Forms - Adjust to work with the simpler display logic */
+.login-form-container h2 {
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-form-container form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input-group input[type="email"],
+.input-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input[type="email"]:focus,
+.input-group input[type="password"]:focus {
+    border-color: #4C6EF5;
+    box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
+}
+
+.login-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4C6EF5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.login-button:hover {
+    background-color: #3B5BB2;
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #4C6EF5;
+    text-decoration: underline;
+}
+
+
+/* Utility class to hide elements */
+.hidden {
+    display: none !important; /* Use !important to ensure it overrides other display properties */
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments (No changes) */
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-panel, .right-panel {
+        flex: none;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .left-panel {
+        height: 40vh;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .logo-brand {
+        margin-bottom: 0;
+    }
+
+    .baymax-robot {
+        position: static;
+        transform: none;
+        max-height: 80%;
+        max-width: 50%;
+        margin-top: 20px;
+    }
+
+    .right-panel {
+        height: 60vh;
+        padding: 20px;
+    }
+
+    .auth-card {
+        padding: 30px;
+        width: 90%;
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .brand-name {
+        font-size: 2em;
+    }
+
+    .logo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .auth-card {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .option-box {
+        padding: 20px;
+    }
+
+    .option-box .icon {
+        font-size: 3.5em;
+    }
+
+    .option-text {
+        font-size: 1.1em;
+    }
+}

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Upload E-Prescription</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f9ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Navigation Bar Styles --- */
+        .navbar-brand.fw-bold.text-primary {
+            color: #007bff !important; /* Specific blue for QUECARE brand */
+        }
+
+        .navbar-nav .nav-link {
+            color: #212529; /* Darker text for standard links */
+            font-weight: 500;
+            transition: color 0.2s ease;
+            padding: 0.5rem 1rem; /* Default Bootstrap nav-link padding */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #0056b3; /* Darker blue on hover */
+        }
+
+        .navbar-nav .nav-item {
+            margin-right: 10px; /* Space between nav items */
+        }
+
+        /* Override Bootstrap's default dropdown menu styles */
+        .dropdown-menu {
+            border-radius: 20px; /* More rounded */
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none; /* No border */
+            min-width: 220px; /* Adjust dropdown width */
+        }
+
+        .dropdown-item {
+            padding: 10px 18px; /* More horizontal padding for items */
+            border-radius: 10px;
+            transition: background 0.2s ease;
+            color: #333; /* Default item color */
+        }
+
+        .dropdown-item:hover {
+            background-color: #f2f4f7; /* Light gray background on hover */
+            color: #333;
+        }
+
+        /* Emergency dropdown specific styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px; /* Wider for the SOS button */
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545; /* Red */
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545; /* Red */
+            color: white;
+            border-radius: 50px; /* Pill shape */
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+
+        .hero-section {
+            background: linear-gradient(to right, #ECF6FF, #ECF6FF);
+            color: #234A6B;
+            padding: 4rem 1rem 2rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .hero-section h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-section span {
+            color: #3F5DD8;
+        }
+
+        .content-wrapper {
+            max-width: 550px;
+            margin: -40px auto 3rem;
+            padding: 3rem 2rem;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            flex-grow: 1;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #234A6B;
+        }
+
+        .form-field, .form-textarea {
+            background-color: #eef4ff;
+            border: 1px solid #d0e0f0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            width: 100%;
+            font-size: 1rem;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-field:focus, .form-textarea:focus {
+            border-color: #3F5DD8;
+            box-shadow: 0 0 0 0.2rem rgba(63, 93, 216, 0.25);
+            outline: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            height: 130px;
+        }
+
+        .upload-button {
+            background-color: #4a63f5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .upload-button:hover {
+            background-color: #3c5baf;
+            transform: translateY(-2px);
+        }
+
+        .back-home-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .back-home-btn button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .back-home-btn button:hover {
+            background-color: #2a7cad;
+            transform: translateY(-2px);
+        }
+
+        /* --- Footer Styles --- */
+        footer {
+            background-color: #13324f; /* Dark blue from your image */
+            color: white; /* Ensure text color is white */
+            padding: 30px 20px;
+            margin-top: auto; /* Push footer to the bottom */
+            font-size: 0.9rem; /* Slightly smaller font for footer text */
+        }
+        footer h6 {
+            color: white; /* Ensure headings are white */
+            margin-bottom: 15px;
+        }
+        footer .nav-link {
+            color: white; /* White links */
+            padding: 5px 0; /* Adjust padding */
+            transition: color 0.2s ease;
+            font-size: 0.85rem; /* Smaller font for links */
+        }
+        footer .nav-link:hover {
+            color: #d0d0d0; /* Light gray on hover */
+        }
+        footer .list-unstyled li {
+            margin-bottom: 5px; /* Space between list items */
+        }
+        footer p.small {
+            color: white; /* Ensure paragraph text is white */
+            font-size: 0.85rem;
+        }
+
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                align-items: flex-start !important; /* Align nav items to start on small screens */
+            }
+            .navbar-nav .nav-item {
+                margin-right: 0;
+                width: 100%; /* Full width for nav items in collapsed menu */
+            }
+            .emergency-dropdown .dropdown-menu {
+                width: 100%; /* Full width for emergency dropdown on small screens */
+                max-width: 350px; /* Keep max width to prevent stretching too much */
+                margin: auto; /* Center it */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 1.7rem;
+            }
+
+            .content-wrapper {
+                padding: 2rem 1.5rem;
+                margin: -30px auto 2rem;
+            }
+
+            .back-home-btn {
+                position: static; /* Make it flow with content */
+                margin-bottom: 20px; /* Add some space below it */
+                width: fit-content;
+                float: none; /* Remove float */
+                text-align: center; /* Center the button itself */
+            }
+
+            .back-home-btn button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            footer .col-md-3 {
+                text-align: center !important; /* Center footer columns on small screens */
+                margin-bottom: 20px;
+            }
+            footer .d-flex {
+                justify-content: center !important; /* Center social icons if any */
+            }
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="../home/index.html">Home</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="functionalityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Functionality
+                    </a>
+                    <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="functionalityDropdown">
+                        <li><a class="dropdown-item" href="/crowdMornitoring/index.html">Crowd Monitoring</a></li>
+                        <li><a class="dropdown-item" href="../livetoken/index.html">Live Token Tracker</a></li>
+                        <li><a class="dropdown-item" href="/secondOpinion/index.html">Second Opinion</a></li>
+                        <li><a class="dropdown-item" href="../doctorAvailablity/index.html">Doctor Availability</a></li>
+                        <li><a class="dropdown-item" href="../recoveryStatus/index.html">Recovery Status</a></li>
+                        <li><a class="dropdown-item" href="../e-Prescription/index.html">E - Prescription</a></li>
+                        <li><a class="dropdown-item" href="../qrCode/index.html">QR-Checkin</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item"><a class="nav-link" href="../doctorChat/index.html">Chat</a></li>
+
+                <li class="nav-item ms-lg-2">
+                    <button
+                        onclick="window.location.href='../emergency/index.html'"
+                        class="btn emergency-btn"
+                        type="button"
+                        id="emergencyButton">
+                        <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                    </button>
+                </li>
+
+                <li class="nav-item"><a class="nav-link" href="../Login/index.html">Sign Out</a></li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-primary rounded-pill px-4" href="../bookings/index.html">Bookings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="hero-section">
+    <h1>Upload <span>E-Prescription</span></h1>
+    <p class="text-muted" style="font-size: 1rem;">Fill in the details and upload your e-prescription easily.</p>
+</div>
+
+<div class="content-wrapper">
+    <form id="prescriptionForm"> <div class="mb-3">
+            <label class="form-label" for="patientName">Patient's Name</label>
+            <input type="text" class="form-field" id="patientName" placeholder="e.g. John Doe">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="hospitalName">Hospital Name</label>
+            <input type="text" class="form-field" id="hospitalName" placeholder="e.g. Sunrise Hospital">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="visitDate">Date of Visit</label>
+            <input type="date" class="form-field" id="visitDate">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="diagnosis">Diagnosis</label>
+            <input type="text" class="form-field" id="diagnosis" placeholder="e.g. Flu, Diabetes...">
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="prescriptionDetails">E-Prescription</label>
+            <textarea class="form-textarea" id="prescriptionDetails" placeholder="Type or paste prescription here..."></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="patientEmail">Patient's Email (for direct sending)</label>
+            <input type="email" class="form-field" id="patientEmail" placeholder="e.g. patient@example.com">
+        </div>
+
+        <button type="button" class="upload-button" onclick="sendPrescriptionByEmail()">
+            Upload & Email Prescription
+        </button>
+    </form>
+</div>
+
+<footer class="text-center py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">QUECARE</h6>
+                <p class="small">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                <div class="d-flex justify-content-start">
+                </div>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Explore</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../home/index.html" class="nav-link p-0">Home</a></li>
+                    <li><a href="#" class="nav-link p-0">Functionality</a></li>
+                    <li><a href="../doctorChat/index.html" class="nav-link p-0">Consultation</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">About Us</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                    <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                    <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 text-start">
+                <h6 class="fw-bold">Contact</h6>
+                <p class="small">+91 9171015834</p>
+                <p class="small">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <p class="small">Copyright © 2024. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function triggerEmergency() {
+        alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+    }
+
+    function sendPrescriptionByEmail() {
+        // 1. Get form input values
+        const patientName = document.getElementById('patientName').value.trim();
+        const hospitalName = document.getElementById('hospitalName').value.trim();
+        const visitDate = document.getElementById('visitDate').value.trim();
+        const diagnosis = document.getElementById('diagnosis').value.trim();
+        const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim();
+        const patientEmail = document.getElementById('patientEmail').value.trim();
+
+        // 2. Basic validation (you'll want more robust validation)
+        if (!patientName || !hospitalName || !visitDate || !diagnosis || !prescriptionDetails || !patientEmail) {
+            alert('Please fill in all fields, including the patient\'s email.');
+            return;
+        }
+
+        // Validate email format (simple check)
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(patientEmail)) {
+            alert('Please enter a valid email address for the patient.');
+            return;
+        }
+
+        // 3. Create a data object to send to the backend
+        const prescriptionData = {
+            patientName: patientName,
+            hospitalName: hospitalName,
+            visitDate: visitDate,
+            diagnosis: diagnosis,
+            prescriptionDetails: prescriptionDetails,
+            patientEmail: patientEmail
+        };
+
+        console.log("Prescription Data to be sent:", prescriptionData);
+
+        // --- IMPORTANT: This is where you would send data to your backend ---
+        // Example using Fetch API to send data to a theoretical backend endpoint:
+        /*
+        fetch('/api/send-prescription-email', { // Replace with your actual backend endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(prescriptionData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Handle non-2xx responses (e.g., server errors)
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Or response.text() if your backend sends plain text
+        })
+        .then(data => {
+            alert('Prescription successfully uploaded and email initiated! Server response: ' + JSON.stringify(data));
+            // You might want to clear the form here
+            document.getElementById('prescriptionForm').reset();
+        })
+        .catch((error) => {
+            console.error('Error sending prescription:', error);
+            alert('Failed to send prescription. Please try again. (Check console for details)');
+        });
+        */
+
+        // For demonstration, since there's no backend:
+        alert("Prescription data collected and ready to be sent to a backend! Check your browser's console for the data.\n\n" +
+              "**NOTE:** Actual email sending requires a server-side solution.");
+        
+        // Optionally clear the form after "submission"
+        document.getElementById('prescriptionForm').reset();
+    }
+</script>
+</body>
+</html>

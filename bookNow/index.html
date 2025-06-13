@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Spot</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <style>
+        /* Define your primary color variable here for consistency */
+        :root {
+            --que-primary: #3F5DD8; /* This is the blue color used for primary buttons/text */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+            margin-bottom: 20px; /* Added some space below the navbar */
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* Use the defined variable */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Existing styles */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* Emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Prevent text wrapping on button */
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+        
+        .booking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .booking-header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .booking-header h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .submit-btn {
+            background-color: var(--que-primary); /* Use variable */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #0e2f90;
+        }
+        
+        .qr-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px dashed #ddd;
+            display: none; /* Hidden by default, shown after form submission */
+        }
+        
+        #qrcode {
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .qr-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .qr-btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+        
+        .generate-qr {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .generate-qr:hover {
+            background-color: #219653; /* Darker green on hover */
+        }
+
+        .download-qr {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .download-qr:hover {
+            background-color: #d36a1e; /* Darker orange on hover */
+        }
+
+        /* Testimonials Section Styles - (UPDATED) */
+        .testimonials {
+            background-color: #f8f9fa; /* Light background for section */
+            padding: 40px 20px; /* More padding */
+            border-radius: 10px;
+            margin-top: 40px; /* Space from above content */
+        }
+
+        .testimonials h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 2rem; /* Larger heading */
+        }
+
+        .feature-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Stronger shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%; /* Ensure cards are same height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        /* Footer Styles - (UPDATED) */
+        footer {
+            background-color:#13324F; /* Primary color background */
+            color: white;
+            padding: 50px 0; /* More padding */
+            margin-top: 40px; /* Space from above content */
+        }
+
+        footer h6 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        footer .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important; /* Lighter white for links */
+            transition: color 0.2s ease;
+            padding-left: 0; /* Remove default padding for list-unstyled links */
+        }
+
+        footer .nav-link:hover {
+            color: white !important; /* Pure white on hover */
+            text-decoration: underline;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border for dark background */
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        /* Back button styles */
+        .back-button {
+            background-color: #13324F;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            margin-left: 20px; /* Align with content container */
+        }
+
+        .back-button:hover {
+            background-color: #13324F;
+        }
+        
+        @media (max-width: 768px) { /* Adjusted breakpoint slightly for form-row */
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px; /* Reduce padding on very small screens */
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .navbar-nav .nav-item {
+                margin: 0.5rem 0; /* Adjust vertical spacing for nav items */
+            }
+
+            .qr-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            /* Responsive adjustments for new footer */
+            footer .col-md-3 {
+                margin-bottom: 30px; /* Add space between columns on small screens */
+            }
+
+            footer .col-md-3:last-child {
+                margin-bottom: 0; /* No margin after the last column */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../patientHome/index.html">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../patientHospital/index.html">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-tertiary rounded-pill px-4" href="../emergencyInformation/index.html">
+                            Emergency Info
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="booking-container">
+        <div class="booking-header">
+            <h1>Book Your Spot!</h1>
+        </div>
+        
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="name">Name of the Patient</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <input type="tel" id="contact" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" required> 
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="speciality">Select Speciality</label>
+                <select id="speciality" required>
+                    <option value="">-- Select --</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date">Select Date and Time</label>
+                    <input type="datetime-local" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="hospital">Preferred Hospital</label>
+                    <select id="hospital" required>
+                        <option value="">-- Select Hospital --</option>
+                        <option value="Apollo Hospitals">Apollo Hospitals</option>
+                        <option value="Fortis Hospital">Fortis Hospital</option>
+                        <option value="Max Super Speciality Hospital">Max Super Speciality Hospital</option>
+                        <option value="AIIMS">AIIMS</option>
+                        <option value="Manipal Hospital">Manipal Hospital</option>
+                        <option value="Medanta - The Medicity">Medanta - The Medicity</option>
+                        <option value="Kokilaben Dhirubhai Ambani Hospital">Kokilaben Dhirubhai Ambani Hospital</option>
+                        <option value="Artemis Hospital">Artemis Hospital</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment">Payment Option</label>
+                <select id="payment" required>
+                    <option value="">-- Select --</option>
+                    <option value="credit">Credit Card</option>
+                    <option value="debit">Debit Card</option>
+                    <option value="insurance">Insurance</option>
+                    <option value="cash">Cash</option>
+                    <option value="upi">UPI</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="submit-btn">Generate QR</button>
+        </form>
+        
+        <div class="qr-section" id="qrSection">
+            <h3>Your Booking QR Code</h3>
+            <div id="qrcode"></div>
+            <p>Scan this QR code to confirm your check-in</p>
+            <div class="qr-buttons">
+                <button class="qr-btn generate-qr" onclick="generateQRFromForm()">Regenerate QR</button>
+                <button class="qr-btn download-qr" onclick="downloadQR()">Download QR</button>
+            </div>
+        </div>
+    </div>
+    
+    <section class="testimonials">
+        <div class="container text-center">
+            <h2>Read feedback about our Services and wonderful team!</h2>
+            <div class="row g-4 mt-4">
+                <div class="col-md-3">
+                    <div class="feature-card">"Excellent support!"</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">"Saved hours of waiting."</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">"Super easy app."</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-card">"My doctor loves it too!"</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: rgba(255, 255, 255, 0.7);">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                        </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/homewithout" class="nav-link p-0">Home</a></li>
+                        <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                        <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: rgba(255, 255, 255, 0.7);">+91 9171015834</p>
+                    <p class="small" style="color: rgba(255, 255, 255, 0.7);">VIT Bhopal University, Kotri Kalan, Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small copyright">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // Define the triggerEmergency function
+        function triggerEmergency() {
+            // In a real application, you'd add functionality here:
+            // 1. Get user's current geolocation (if permission granted)
+            //    Example: navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+            // 2. Send this location and user ID (if logged in) to an emergency service/backend.
+            // 3. Notify predefined emergency contacts (e.g., via SMS API).
+            // 4. Provide user feedback (e.g., "Emergency alert sent! Help is on its way.").
+            alert("Emergency SOS triggered! (This is a demo alert)\nYour live location would be shared with the nearest help center and your emergency contacts.");
+            console.log("Emergency SOS triggered!");
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                contact: document.getElementById('contact').value,
+                dob: document.getElementById('dob').value,
+                speciality: document.getElementById('speciality').value,
+                date: document.getElementById('date').value,
+                hospital: document.getElementById('hospital').value,
+                address: document.getElementById('address').value,
+                payment: document.getElementById('payment').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Generate booking ID
+            // For a real application, consider a more robust and unique ID from a server.
+            const bookingId = 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            formData.bookingId = bookingId;
+            
+            // Generate QR code using the collected form data
+            generateQR(JSON.stringify(formData));
+            
+            // Show QR section
+            document.getElementById('qrSection').style.display = 'block';
+            
+            // Scroll to QR section
+            document.getElementById('qrSection').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // This function generates the QR code. It can accept data directly.
+        function generateQR(data) {
+            // Clear previous QR code
+            document.getElementById('qrcode').innerHTML = '';
+            
+            // Generate new QR code
+            new QRCode(document.getElementById('qrcode'), {
+                text: data, // Use the provided data
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // This function is for the "Regenerate QR" button, pulling current form data
+        function generateQRFromForm() {
+             const formData = {
+                name: document.getElementById('name').value,
+                contact: document.getElementById('contact').value,
+                dob: document.getElementById('dob').value,
+                speciality: document.getElementById('speciality').value,
+                date: document.getElementById('date').value,
+                hospital: document.getElementById('hospital').value,
+                address: document.getElementById('address').value,
+                payment: document.getElementById('payment').value,
+                timestamp: new Date().toISOString(),
+                bookingId: 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase() // Generate new ID on regenerate
+            };
+            generateQR(JSON.stringify(formData));
+            alert("QR Code Regenerated!");
+        }
+        
+        function downloadQR() {
+            const qrElement = document.getElementById('qrcode');
+            const canvas = qrElement.querySelector('canvas'); // Find the canvas element inside the qrcode div
+            
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'booking-qr.png';
+                link.href = canvas.toDataURL('image/png'); // Get the data URL of the canvas as a PNG
+                link.click(); // Programmatically click the link to trigger download
+            } else {
+                alert("QR Code not found or not yet generated!");
+            }
+        }
+    </script>
+</body>
+</html>

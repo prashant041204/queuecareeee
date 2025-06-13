@@ -1,0 +1,444 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QueCare</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* QueCare Theme Colors and Font */
+        :root {
+            --que-primary: #0d6efd; /* Blue from buttons in main UI */
+            --que-secondary: #eaf2ff; /* Light blue background from main hero */
+            --que-dark-blue: #13324f; /* Dark blue from footer */
+            --que-red: #dc3545; /* Red from emergency button */
+            --que-light-gray: #f2f4f7; /* Light gray for dropdown item hover */
+            --que-text-dark: #2c3e50; /* Darker text color for headings */
+            --que-card-bg: #ecf6ff; /* Background for feature/function cards */
+            --que-tertiary: #3F5DD8; /* Custom button color */
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Navbar styles - adapted from main QueCare UI */
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* QueCare primary blue */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Existing styles */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f2f4f7;
+        }
+        
+        /* Emergency dropdown styles */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+        
+        /* New Button Styles (previously added) */
+        .btn-tertiary {
+            background-color: var(--que-tertiary);
+            color: white;
+            border: 1px solid var(--que-tertiary);
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-tertiary:hover {
+            background-color: #354FC7;
+            border-color: #354FC7;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(63, 93, 216, 0.3);
+            color: white;
+        }
+        .btn-tertiary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Existing body styles */
+        .hero {
+            background-color: #eaf2ff;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .search-box {
+            max-width: 500px;
+            margin: auto;
+        }
+        .features, .functions, .team, .testimonials {
+            padding: 60px 20px;
+        }
+        .feature-card, .function-card {
+            padding: 30px;
+            border-radius: 12px;
+            background: #ecf6ff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        .feature-card:hover, .function-card:hover {
+            transform: translateY(-5px);
+        }
+        /* Modified footer style */
+        footer {
+            background-color: #13324f;
+            color: white; /* Main text color for footer */
+            padding: 30px 20px;
+        }
+
+        /* FOOTER LINK COLOR MODIFICATION */
+        footer .list-unstyled a {
+            color: white !important; /* Set links to white */
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: #ccc !important; /* Slightly dimmer white on hover for subtle effect */
+        }
+        /* Ensure headings within footer columns are also white */
+        footer .col-md-3 h6 {
+            color: white;
+        }
+
+        .doctor-gallery {
+            margin: 30px 0;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        .doctor-card {
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .doctor-card:hover {
+            transform: translateY(-5px);
+        }
+        .doctor-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 3px solid #3498db;
+            margin-bottom: 15px;
+        }
+        .doctor-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .specialty {
+            color: #3498db;
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 5px;
+        }
+        @media (max-width: 768px) {
+            .col-md-3 {
+                flex: 0 0 50%;
+                max-width: 50%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/homewithout">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../bookNow/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="../patientHospital/index.html">Hospitals</a></li>
+                    
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-tertiary rounded-pill px-4" href="../emergencyInformation/index.html">
+                            Emergency Info
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1 class="display-5">QUEUE LESS, <span class="text-primary">CARE MORE!</span></h1>
+        <p class="mt-3">Quickcare brings you faster bookings, smarter updates &amp; healthcare, right when you need it. Say goodbye to long queues, and hello to smart token tracking.</p>
+        <div class="search-box input-group mt-4">
+            <input type="text" class="form-control" placeholder="Search Hospital or Token">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </section>
+
+    <section class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="d1.jpg" alt="Doctors" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6">
+                <h3>"We Don't Just Treat. We Transform."</h3>
+                <p>A doctor who cares not just for appointments — we're fixing healthcare queues, digitalizing patient journeys and offering insights with care.</p>
+                <a href="../aboutUs/index.html" class="btn btn-primary">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features bg-light">
+        <div class="container text-center">
+            <h2>Care That Matters Most</h2>
+            <p class="mb-5">Key products that make long queues a thing of the past</p>
+            <div class="row g-4">
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientCrowd/index.html"><div class="feature-card">Crowd Monitoring</div></a></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientLivetoken/index.html"><div class="feature-card">Live Token Tracker</div></a></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientSop/index.html"><div class="feature-card">Second Opinion</div></a></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientDoctorA/index.html"><div class="feature-card">Doctor Availability</div></a></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="functions">
+        <div class="container text-center">
+            <h2>Our Functionality</h2>
+            <div class="row g-4 mt-4">
+                <div class="col-md-3">
+                    <a class="text-decoration-none" href="../emergencyInformation/index.html">
+                        <div class="function-card">Emergency Information</div>
+                    </a>
+                </div>          
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientMedicalreport/index.html"><div class="feature-card">Medical Report Storage</div></a></div>
+                <div class="col-md-3"><div class="function-card">Offline Access</div></div>
+                <div class="col-md-3"><div class="function-card">Multilingual Support</div></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../bookNow/index.html"><div class="feature-card">QR Check in</div></a></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientChat/index.html"><div class="feature-card">Online Consultancy</div></a></div>
+                <div class="col-md-3"><a class="text-decoration-none" href="../patientRecovery/index.html"><div class="feature-card">Recovery Status</div></a></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team bg-light">
+        <div class="container text-center">
+            <h2>Empathy. Access. Innovation.</h2>
+            <p>Our Core Commitment</p>
+            <div class="row doctor-gallery">
+                <div class="col-md-3 doctor-card">
+                    <img src="d2.jpg" class="img-fluid rounded" alt="Doctor">
+                    <div class="doctor-label">Dr. Smith<br><span class="specialty">Cardiologist</span></div>
+                </div>
+                <div class="col-md-3 doctor-card">
+                    <img src="d3.jpg" class="img-fluid rounded" alt="Doctor">
+                    <div class="doctor-label">Dr. Johnson<br><span class="specialty">Neurologist</span></div>
+                </div>
+                <div class="col-md-3 doctor-card">
+                    <img src="d4.jpg" class="img-fluid rounded" alt="Doctor">
+                    <div class="doctor-label">Dr. Williams<br><span class="specialty">Pediatrician</span></div>
+                </div>
+                <div class="col-md-3 doctor-card">
+                    <img src="d5.jpg" class="img-fluid rounded" alt="Doctor">
+                    <div class="doctor-label">Dr. Brown<br><span class="specialty">Dermatologist</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container text-center">
+            <h2>Read feedback about our Services and wonderful team!</h2>
+            <div class="row g-4 mt-4">
+                <div class="col-md-3"><div class="feature-card">"Excellent support!"</div></div>
+                <div class="col-md-3"><div class="feature-card">"Saved hours of waiting."</div></div>
+                <div class="col-md-3"><div class="feature-card">"Super easy app."</div></div>
+                <div class="col-md-3"><div class="feature-card">"My doctor loves it too!"</div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">QUECARE</h6>
+                    <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+                    <div class="d-flex justify-content-start">
+                    </div>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Explore</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="nav-link p-0">Home</a></li>
+                        <li><a href="../patientDoctorA/index.html" class="nav-link p-0">Doctors</a></li>
+                        <li><a href="../patientHospital/index.html" class="nav-link p-0">Hospitals</a></li>
+                        <li><a href="#" class="nav-link p-0">Specialties</a></li>
+                        <li><a href="../patientChat/index.html" class="nav-link p-0">Consultation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">About Us</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="../aboutUs/index.html" class="nav-link p-0">Our Team</a></li>
+                        <li><a href="../termandCondition/index.html" class="nav-link p-0">Terms & Conditions</a></li>
+                        <li><a href="../faqs/index.html" class="nav-link p-0">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 text-start">
+                    <h6 class="fw-bold">Contact</h6>
+                    <p class="small" style="color: white;">+91 9171015834</p>
+                    <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerEmergency() {
+            alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+        }
+    </script>
+
+</body>
+</html>

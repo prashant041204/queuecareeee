@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUECARE - Signup / Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo-brand">
+                <img src="images/quecare-logo.png" alt="QUECARE Logo" class="logo">
+                <h1 class="brand-name">QUECARE</h1>
+            </div>
+            <img src="images/baymax.png" alt="Baymax Robot" class="baymax-robot">
+        </div>
+
+        <div class="right-panel">
+            <div id="dynamicContentContainer" class="auth-card">
+                <div id="selectionCard">
+                    <a href="../login/index.html" class="option-box doctor-option">
+                        <span class="mdi mdi-doctor icon"></span>
+                        <p class="option-text">DOCTOR</p>
+                    </a>
+                    <a href="..//patientLogin/index.html">
+                        <div class="option-box patient-option" id="patientOption">
+                          <span class="mdi mdi-account-group icon"></span>
+                          <p class="option-text">PATIENT</p>
+                        </div>
+                      </a>
+                      
+
+                <div id="patientLoginForm" class="login-form-container hidden">
+                    <h2>Patient Login</h2>
+                    <form>
+                        <div class="input-group">
+                            <label for="patientEmail">Email</label>
+                            <input type="email" id="patientEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="patientPassword">Password</label>
+                            <input type="password" id="patientPassword" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="login-button">Login as Patient</button>
+                    </form>
+                    <p class="back-link" id="backToSelectionFromPatient">&larr; Back to Selection</p>
+                </div>
+
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

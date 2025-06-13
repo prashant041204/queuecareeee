@@ -1,0 +1,388 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUECARE - Terms & Conditions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* QueCare Theme Colors and Font */
+        :root {
+            --que-primary: #0d6efd; /* Blue from buttons in main UI */
+            --que-secondary: #eaf2ff; /* Light blue background from main hero */
+            --que-dark-blue: #13324f; /* Dark blue from footer */
+            --que-red: #dc3545; /* Red from emergency button */
+            --que-light-gray: #f2f4f7; /* Light gray for dropdown item hover */
+            --que-text-dark: #2c3e50; /* Darker text color for headings */
+            --que-card-bg: #ecf6ff; /* Background for feature/function cards */
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif; /* Consistent font */
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Navbar styles - adapted from main QueCare UI */
+        .navbar {
+            background-color: white; /* White navbar background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--que-primary) !important; /* QueCare primary blue */
+        }
+        
+        .nav-link {
+            color: #333 !important; /* Dark text for nav links */
+            margin: 0 0.7rem; /* Slightly more spacing */
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--que-primary) !important; /* Primary blue on hover */
+        }
+
+        /* Dropdown styles (reused from main UI) */
+        .dropdown-menu {
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: var(--que-light-gray);
+        }
+
+        /* Emergency dropdown styles (reused from main UI) */
+        .emergency-dropdown .dropdown-menu {
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sos-button-container {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .sos-button {
+            width: 80px;
+            height: 80px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: var(--que-red);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            transition: transform 0.2s;
+        }
+        .sos-button:hover {
+            transform: scale(1.05);
+        }
+        .sos-pulse {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            top: -10px;
+            left: -10px;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+        .emergency-btn {
+            background-color: var(--que-red);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .emergency-btn:hover {
+            background-color: #c82333;
+        }
+        .emergency-btn i {
+            margin-right: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--que-secondary); /* Light blue background */
+            text-align: center;
+            padding: 80px 20px; /* Consistent padding */
+            color: #333; /* Dark text for readability on light background */
+        }
+        .hero h1 {
+            color: var(--que-text-dark); /* Darker title */
+            margin-bottom: 1rem;
+        }
+        .hero .text-primary {
+            color: var(--que-primary) !important; /* Use QueCare primary blue */
+        }
+
+        /* Content Section Styling */
+        .content-section {
+            background-color: white;
+            padding: 40px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .content-section h2 {
+            color: var(--que-text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .content-section h3 {
+            color: var(--que-primary);
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .content-section ol, .content-section ul {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #555;
+            padding-left: 20px;
+            margin-bottom: 1rem;
+        }
+        .content-section ol li, .content-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer styles - copied from previous turn */
+        footer {
+            background-color: var(--que-dark-blue);
+            color: white;
+            padding: 30px 20px;
+        }
+        footer .list-unstyled a {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: white !important;
+        }
+        footer .text-muted.small {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        footer .bi {
+            font-size: 1.5rem;
+            color: white; /* Ensure icons are white */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/homewithout">QUECARE</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/homewithout">Home</a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="specialtiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Specialties
+                        </a>
+                        <ul class="dropdown-menu shadow rounded-3 border-0" aria-labelledby="specialtiesDropdown">
+                            <li><a class="dropdown-item" href="../patientCrowd/index.html">Crowd Monitoring</a></li>
+                            <li><a class="dropdown-item" href="../patientLivetoken/index.html">Live Token Tracker</a></li>
+                            <li><a class="dropdown-item" href="../patientSop/index.html">Second Opinion</a></li>
+                            <li><a class="dropdown-item" href="../patientDoctorA/index.html">Doctor Availability</a></li>
+                            <li><a class="dropdown-item" href="../patientMedicalreport/index.html">Medical Report Storage</a></li>
+                            <li><a class="dropdown-item" href="../patientRecovery/index.html">Recovery Status</a></li>
+                            <li><a class="dropdown-item" href="../patientChat/index.html">Online Consultation</a></li>
+                            <li><a class="dropdown-item" href="../patientQr/index.html">QR-Checkin</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="/patientHospital">Hospitals</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link" href="/aboutus">About Us</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link active" href="#">Terms & Conditions</a></li>
+
+                    <li class="nav-item dropdown emergency-dropdown ms-2">
+                        <button class="btn emergency-btn dropdown-toggle" type="button" id="emergencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="emergencyDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Are you in an emergency?</h6>
+                                <p class="text-muted px-3">Press the SOS button, your live location will be shared with the nearest help center and your emergency contacts</p>
+                            </li>
+                            <li class="text-center">
+                                <div class="sos-button-container">
+                                    <div class="sos-pulse"></div>
+                                    <button class="sos-button" onclick="triggerEmergency()">
+                                        SOS
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../frontLogin/index.html">Sign Out</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4" href="../bookNow/index.html">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-5">QUECARE <span class="text-primary">TERMS & CONDITIONS</span></h1>
+            <p class="mt-3">Understanding Your Rights and Responsibilities When Using Our Services.</p>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="content-section">
+                    <h2>Terms and Conditions of Use</h2>
+                    <p class="text-muted text-center mb-4">Last Updated: June 14, 2025</p>
+
+                    <h3>1. Introduction</h3>
+                    <p>Welcome to QueCare. These Terms and Conditions govern your use of QueCare's website, mobile applications, and services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms and Conditions and our Privacy Policy. If you do not agree to all the terms and conditions of this agreement, then you may not access the Service.</p>
+
+                    <h3>2. Acceptance of Terms</h3>
+                    <p>By creating an account, accessing the Service, or clicking "I Agree" or "Sign Up" or similar, you represent that you have read, understood, and agree to be bound by these Terms, whether or not you are a registered member of the Service.</p>
+
+                    <h3>3. User Accounts</h3>
+                    <ul>
+                        <li>**Account Creation:** To access certain features of the Service, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.</li>
+                        <li>**Account Security:** You are responsible for safeguarding your password and for any activities or actions under your password. QueCare cannot and will not be liable for any loss or damage arising from your failure to comply with the above requirements.</li>
+                        <li>**Prohibited Uses:** You agree not to use the Service for any unlawful or prohibited activities, including but not limited to, misrepresenting your identity, infringing on intellectual property rights, transmitting harmful code, or engaging in fraudulent behavior.</li>
+                    </ul>
+
+                    <h3>4. Use of Services</h3>
+                    <p>QueCare provides a platform to connect patients with healthcare facilities, manage appointments, track tokens, access medical reports, and offer teleconsultation services. Our Service is provided for informational and scheduling purposes only and does not constitute medical advice or a doctor-patient relationship.</p>
+                    <p>You agree to use the Service only for lawful purposes and in a manner that does not infringe the rights of, restrict or inhibit anyone else's use and enjoyment of the Service.</p>
+
+                    <h3>5. Privacy Policy</h3>
+                    <p>Your privacy is very important to us. Our Privacy Policy explains how we collect, use, and disclose information about you. By using the Service, you consent to our collection, use, and disclosure of your information as set forth in the Privacy Policy.</p>
+
+                    <h3>6. Intellectual Property</h3>
+                    <p>All content, trademarks, service marks, trade names, logos, and other intellectual property displayed on the Service are owned by QueCare or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not use, reproduce, distribute, or create derivative works from any content on the Service without explicit written permission from QueCare.</p>
+
+                    <h3>7. Disclaimers</h3>
+                    <ul>
+                        <li>**No Medical Advice:** The information provided through the Service is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</li>
+                        <li>**Accuracy of Information:** While we strive for accuracy, QueCare does not warrant that the information available through the Service is accurate, complete, reliable, current, or error-free.</li>
+                        <li>**Service Availability:** QueCare does not guarantee that the Service will be uninterrupted, timely, secure, or error-free. We reserve the right to suspend or discontinue the Service at any time without notice.</li>
+                    </ul>
+
+                    <h3>8. Limitation of Liability</h3>
+                    <p>To the maximum extent permitted by applicable law, in no event shall QueCare, its affiliates, directors, employees, or licensors be liable for any indirect, punitive, incidental, special, consequential, or exemplary damages, including without limitation damages for loss of profits, goodwill, use, data, or other intangible losses, arising out of or relating to the use of, or inability to use, the Service.</p>
+
+                    <h3>9. Indemnification</h3>
+                    <p>You agree to indemnify and hold harmless QueCare, its affiliates, officers, directors, employees, and agents from and against any and all claims, liabilities, damages, losses, and expenses, including reasonable attorneys' fees and costs, arising out of or in any way connected with your access to or use of the Service or your violation of these Terms.</p>
+
+                    <h3>10. Termination</h3>
+                    <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+
+                    <h3>11. Governing Law</h3>
+                    <p>These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions.</p>
+
+                    <h3>12. Changes to Terms</h3>
+                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+
+                    <h3>13. Contact Information</h3>
+                    <p>If you have any questions about these Terms, please contact us at care@quecare.com or through our contact page.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-4" style="background-color: #13324f; color: white;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">QUECARE</h6>
+          <p class="small" style="color: white;">Your health, our priority. Simplifying healthcare where every second and every step counts.</p>
+          <div class="d-flex justify-content-start">
+          </div>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">Explore</h6>
+          <ul class="list-unstyled small">
+            <li><a href="#" class="nav-link p-0" style="color: white;">Home</a></li>
+            <li><a href="../patientDoctorA/index.html" class="nav-link p-0" style="color: white;">Doctors</a></li>
+            <li><a href="../patientHospital/index.html" class="nav-link p-0" style="color: white;">Hospitals</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">Specialties</a></li>
+            <li><a href="../patientChat/index.html" class="nav-link p-0" style="color: white;">Consultation</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">About Us</h6>
+          <ul class="list-unstyled small">
+            <li><a href="../aboutUs/index.html" class="nav-link p-0" style="color: white;">Our Team</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">Terms & Conditions</a></li>
+            <li><a href="#" class="nav-link p-0" style="color: white;">FAQs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 text-start">
+          <h6 class="fw-bold">Contact</h6>
+          <p class="small" style="color: white;">+91 9171015834</p>
+          <p class="small" style="color: white;">VIT Bhopal UniversitY kotri kalan Bhopal, Madhya Pradesh</p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12 text-center">
+          <p class="small" style="color: white;">Copyright © 2024. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function triggerEmergency() {
+      alert('Emergency alert sent! Your location has been shared with emergency services and your contacts.');
+    }
+  </script>
+
+  </body>
+</html>

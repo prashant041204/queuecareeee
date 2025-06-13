@@ -1,0 +1,228 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>QueCare Login</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        height: 100vh;
+      }
+  
+      .left {
+        flex: 1;
+        background-color: #2E64FE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+  
+      .right {
+        flex: 1;
+        background-color: #EAF0FF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        transition: all 0.4s ease;
+      }
+  
+      .form-box {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        width: 320px;
+      }
+  
+      .form-box input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        background: transparent;
+        outline: none;
+        font-size: 16px;
+      }
+  
+      .form-box button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #2E64FE;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+  
+      .hidden {
+        display: none;
+      }
+  
+      .tab {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+  
+      .tab button {
+        background: none;
+        border: none;
+        font-size: 16px;
+        padding: 10px;
+        cursor: pointer;
+      }
+  
+      .tab button.active {
+        border-bottom: 2px solid #2E64FE;
+        font-weight: bold;
+      }
+  
+      small {
+        color: gray;
+        font-size: 12px;
+      }
+      .left img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        transition: all 0.4s ease;
+        transform: scale(1);
+      }
+  
+      .left img:hover {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="left">
+      <img src="robot-gg.png" alt="Robot" height="400">
+    </div>
+    <div class="right">
+      <div class="tab">
+        <button id="signInTab" class="active" onclick="switchToSignIn()">Sign In</button>
+        <button id="signUpTab" onclick="switchToSignUp()">Sign Up</button>
+      </div>
+  
+      <div class="form-box" id="signInForm">
+        <input type="text" id="signInUsername" placeholder="Username">
+        <input type="password" id="signInPassword" placeholder="Password">
+        <button onclick="window.location.href='../home/index.html'">Sign In</button>
+        <button onclick="showOtpLogin()">Login with Mobile OTP</button>
+      </div>
+  
+      <div class="form-box hidden" id="signUpForm">
+        <input type="text" id="mobile" placeholder="Mobile Number">
+        <button id="sendOtpButton" onclick="sendOTP()">Send OTP</button>
+  
+        <div id="otpField" class="hidden">
+          <input type="text" id="otp" placeholder="Enter OTP">
+          <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+
+        <div class="form-group">
+            <label for="Select Hospital;" class="form-label">Select Hospital<span class="required">*</span></label>
+            <select id="Select Hospital" name="Select Hospital" class="form-select" required="">
+                <option value="">Select Hospital</option>
+                <option value="Apollo SAGE Hospital">Apollo SAGE Hospital</option>
+                <option value="Bansal Hospital">Bansal Hospital</option>
+                <option value="AIIMS">AIIMS</option>
+                <option value="City Hospital">City Hospital"</option>  
+        </div>
+  
+        
+        
+        <input type="text" id="newUsername" placeholder="Username">
+        <input type="password" id="newPassword" placeholder="Password">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        <small>Must be at least 8 characters.</small>
+        <button onclick="signUp()">Sign Up</button>
+      </div>
+    </div>
+  
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+    <script>
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+      firebase.initializeApp(firebaseConfig);
+  
+      let confirmationResult;
+  
+      function switchToSignUp() {
+        document.getElementById("signInForm").classList.add("hidden");
+        document.getElementById("signUpForm").classList.remove("hidden");
+        document.getElementById("signInTab").classList.remove("active");
+        document.getElementById("signUpTab").classList.add("active");
+      }
+  
+      function switchToSignIn() {
+        document.getElementById("signInForm").classList.remove("hidden");
+        document.getElementById("signUpForm").classList.add("hidden");
+        document.getElementById("signInTab").classList.add("active");
+        document.getElementById("signUpTab").classList.remove("active");
+      }
+  
+      function sendOTP() {
+        const mobile = document.getElementById("mobile").value;
+        const phoneNumber = "+91" + mobile;
+        const appVerifier = new firebase.auth.RecaptchaVerifier('sendOtpButton', {
+          size: 'invisible'
+        });
+  
+        firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+          .then((result) => {
+            confirmationResult = result;
+            document.getElementById("otpField").classList.remove("hidden");
+            alert("OTP sent to " + phoneNumber);
+          })
+          .catch((error) => {
+            alert("OTP Error: " + error.message);
+          });
+      }
+  
+      function verifyOTP() {
+        const otp = document.getElementById("otp").value;
+        confirmationResult.confirm(otp).then((result) => {
+          alert("OTP Verified!");
+        }).catch((error) => {
+          alert("OTP Verification Failed");
+        });
+      }
+  
+      function signUp() {
+        const username = document.getElementById("newUsername").value;
+        const pass = document.getElementById("newPassword").value;
+        const confirm = document.getElementById("confirmPassword").value;
+  
+        if (pass !== confirm || pass.length < 8) {
+          alert("Passwords must match and be 8+ characters.");
+          return;
+        }
+  
+        alert(`Signed up as ${username} (You can now log in)`);
+      }
+  
+      function signIn() {
+        const user = document.getElementById("signInUsername").value;
+        const pass = document.getElementById("signInPassword").value;
+        alert(`Signed in as ${user}`);
+      }
+  
+      function showOtpLogin() {
+        alert("This feature is under development.");
+      }
+    </script>
+  
+  
+  </body></html>
